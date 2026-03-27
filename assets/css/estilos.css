@@ -1,0 +1,187 @@
+:root {
+    --num-filas: 1;
+}
+/* ----------------------------
+RESET Y CONFIGURACIÓN TV
+---------------------------- */
+* {
+    box-sizing: border-box;
+}
+
+
+
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Bloqueamos scroll por completo para la tele */
+
+}
+
+/* ----------------------------
+LAYOUT 80/20 REFORZADO
+---------------------------- */
+#principal {
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    padding: 0px;
+    background: white;
+}
+
+#mensajes {
+    height: 20vh;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+
+    border-top: 5px solid #007bff; /* Línea separadora azul */
+}
+/* ----------------------------
+TABLA AUTO-AJUSTABLE
+---------------------------- */
+.scroll-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.tabla-guardias {
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+}
+/*
+.tabla-guardias thead {
+   
+    width: 100%;
+    table-layout: fixed;
+}
+
+.tabla-guardias tbody {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.tabla-guardias tbody tr {
+   
+    width: 100%;
+    table-layout: fixed;
+    flex: 1; 
+}
+
+.tabla-guardias tbody td {
+   
+    width: 100%;
+    table-layout: fixed;
+    flex: 1; 
+}
+*/
+
+/* Ajuste para el título dentro de la zona 80% */
+.titulo-cuadrante {
+    margin: 0;
+    padding: 1vh;
+    text-align: center;
+    background: #333;
+    color: white;
+    font-size: clamp(18px, 3vh, 32px);
+}
+
+/* Resaltado de la guardia actual */
+.fila-actual {
+    background-color: greenyellow !important; /* Amarillo suave */
+    outline: 4px solid #ffc107;
+    outline-offset: -4px;
+    font-weight: bold;
+}
+
+/* Ajuste de las líneas separadoras (HR) dentro de la tabla */
+.tabla-guardias hr {
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 4px 0;    
+}
+
+.tabla-guardias td {
+    padding: 2px;
+    border: 1px solid #ccc;
+    text-align: left;
+    font-size: clamp(24px, 2vh, 32px) !important; /* ajusta automáticamente */
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+/* Asegurar que la tabla ocupe todo el espacio disponible */
+.scroll-container {
+    flex: 1; /* Esto hace que la tabla se estire hasta el borde de la sección mensajes */
+    display: flex;
+}
+
+
+
+
+
+
+#mensajes h3 {
+    flex: 0 0 auto; /* ocupa su altura natural */
+    margin: 0;
+    padding: 0.5vh 1vh;
+    text-align: center;
+}
+
+#contenedor-mensajes-fijo {
+    flex: 1; /* ocupa todo el espacio restante */
+    min-height: 0; /* 🔑 permite que slide encaje */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+#mensajes-contenido {
+    flex: 1; /* ocupa todo el espacio disponible */
+    min-height: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+}
+
+.slide {
+    flex: 1;
+    display: none; /* se muestra solo el activo via JS */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slide-content {
+    display: flex;
+    flex-direction: row; /* imagen y texto al lado */
+    align-items: center;
+    justify-content: center;
+    max-height: 100%; /* nunca excede el contenedor */
+    overflow: hidden;
+}
+
+.slide-content img {
+    max-height: 100%;
+    max-width: 30%; /* ajusta según necesites */
+    object-fit: contain;
+    margin-right: 1vw;
+}
+
+.slide-text p {
+    margin: 0;
+    font-size: clamp(12px, 2vh, 24px); /* ajusta automáticamente */
+}
