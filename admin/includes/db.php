@@ -11,3 +11,10 @@ try {
 } catch (PDOException $e) {
     die("Error de conexión: " . $e->getMessage());
 }
+
+
+
+function depurar($mensaje) {
+    //echo "<script>console.log(\"" . $mensaje . "\");</script>";
+    error_log($mensaje);
+}

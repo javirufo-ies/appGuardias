@@ -125,6 +125,27 @@ TABLA AUTO-AJUSTABLE
 
 
 
+/* Cuadrante de guardias y ausencias */
+.tabla-guardias th.tramo,
+.tabla-guardias td.tramo {
+    width: 8%; /* Tramo de hora más estrecho */
+}
+
+.tabla-guardias th.guardia,
+.tabla-guardias td.guardia {
+    width: 12%; /* Profesores de guardia */
+}
+
+.tabla-guardias th.ausencia,
+.tabla-guardias td.ausencia {
+    width: 20%; /* Ausencias - Grupo / Aula */
+}
+
+.tabla-guardias th.observaciones,
+.tabla-guardias td.observaciones {
+    width: 60%; /* Observaciones más ancho */
+}
+    
 
 
 
@@ -184,4 +205,15 @@ TABLA AUTO-AJUSTABLE
 .slide-text p {
     margin: 0;
     font-size: clamp(12px, 2vh, 24px); /* ajusta automáticamente */
+}
+
+
+/* ----------------------------
+ESTILOS PARA IMPRESIÓN DEL INFORME DE FALTAS
+*/
+@media print {
+    body * { visibility: hidden; }       /* ocultar todo */
+    #informe, #informe * { visibility: visible; } /* solo mostrar el informe */
+    #informe { position: absolute; top: 0; left: 0; width: 100%; }
+    button { display: none; }            /* ocultar botones */
 }

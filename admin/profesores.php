@@ -97,7 +97,8 @@ if (isset($_POST['eliminar'])) {
                 <button type="submit" name="eliminar" onclick="return confirm('¿Seguro que quieres eliminar este profesor?')">Eliminar</button>
                 
                 <!-- VER HORARIO -->
-                <a href="horario_profesor.php?profesor_id=<?= $p['id'] ?>">Ver horario</a>
+                <!-- <a href="horario_profesor.php?profesor_id=<?= $p['id'] ?>">Ver horario</a> -->
+                <a href="horario_profesor_adv.php?profesor_id=<?= $p['id'] ?>">Ver horario avanzado</a>
             </td>
         </form>
     </tr>
