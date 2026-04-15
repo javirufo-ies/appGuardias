@@ -36,6 +36,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mensaje = "✅ Mensaje añadido correctamente";
 }
 
+if(isset($_GET['ok'])){
+    echo "<p style='color:green;font-weight:bold;'>✅ Mensaje eliminado correctamente</p>";
+}
 // --- Obtener todos los mensajes ---
 $mensajes = $pdo->query("SELECT * FROM mensajes ORDER BY fecha_inicio DESC")->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -67,7 +70,8 @@ button { padding:6px 12px; margin:2px; cursor:pointer; }
 <?php if($mensaje): ?><p style="color:green;font-weight:bold;"><?= $mensaje ?></p><?php endif; ?>
 
 <h3>Añadir mensaje</h3>
-<form method="post" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data" action="dashboard.php">
+    <input type="hidden" name="seccion" value="mensajes">
     <label>Fecha inicio:</label>
     <input type="date" name="fecha_inicio" required><br><br>
 
@@ -120,7 +124,6 @@ button { padding:6px 12px; margin:2px; cursor:pointer; }
     </tbody>
 </table>
 
-<a href="dashboard.php" class="btn-dashboard">⬅ Volver al Dashboard</a>
 
 <script>
 const select = document.getElementById('imagen_existente');

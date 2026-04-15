@@ -22,5 +22,5 @@ if($row && $row['imagen']) {
 $pdo->prepare("DELETE FROM mensajes WHERE id = ?")->execute([$id]);
 
 // --- 3️⃣ Redirigir con confirmación
-header("Location: mensajes.php");
+header("Location: dashboard.php?seccion=mensajes&ok=1");
 exit;

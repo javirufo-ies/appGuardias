@@ -34,7 +34,8 @@ $profesores = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <?php endif; ?>
 
 <h2>Alta individual</h2>
-<form method="POST">
+<form method="POST" action="dashboard.php">
+    <input type="hidden" name="seccion" value="profesores">
     <input type="hidden" name="tipo" value="alta">
     Nombre: <input type="text" name="nombre" required>
     Email: <input type="email" name="email">
@@ -87,7 +88,8 @@ if (isset($_POST['eliminar'])) {
     <?php foreach ($profesores as $p): ?>
     <tr>
         <!-- FORMULARIO INLINE PARA EDITAR -->
-        <form method="post" action="">
+        <form method="post" action="dashboard.php">
+            <input type="hidden" name="seccion" value="profesores">
             <td>
                 <input type="text" name="nombre" value="<?= htmlspecialchars($p['nombre']) ?>">
                 <input type="hidden" name="id" value="<?= $p['id'] ?>">
@@ -104,4 +106,3 @@ if (isset($_POST['eliminar'])) {
     </tr>
     <?php endforeach; ?>
 </table>
-<a href="dashboard.php">⬅ Volver</a>

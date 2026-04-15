@@ -108,7 +108,12 @@ if ($_SERVER['REQUEST_METHOD']==='POST'){
         }
     }
 
-    $mensaje = "✅ Ausencias actualizadas";
+    //$mensaje = "✅ Ausencias actualizadas";
+    header("Location: dashboard.php?seccion=ausencias&ok=1&profesor_id=".$_POST['profesor_id']);
+    exit;
+}
+if(isset($_GET['ok'])){
+    echo "<p style='color:green;font-weight:bold;'>✅ Ausencias actualizadas</p>";
 }
 ?>
 <!DOCTYPE html>
@@ -149,7 +154,8 @@ function toggleAusencia(td){
 <h2>Horario y Ausencias de Profesores</h2>
 <?php if($mensaje): ?><p style="color:green; font-weight:bold;"><?= $mensaje ?></p><?php endif; ?>
 
-<form method="get" action="ausencias.php">
+<form method="get" action="dashboard.php">
+<input type="hidden" name="seccion" value="ausencias">
 <label>Profesor:</label>
 <select name="profesor_id" onchange="this.form.submit()">
 <option value="">-- Selecciona --</option>
@@ -221,6 +227,6 @@ endforeach;
 <button type="submit">Guardar ausencias</button>
 </form>
 <?php endif; ?>
-<a href="dashboard.php" class="btn-dashboard">⬅ Volver al Dashboard</a>
+
 </body>
 </html>

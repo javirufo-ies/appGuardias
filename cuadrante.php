@@ -25,23 +25,30 @@ $tramos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $fecha_hoy = date('Y-m-d');
 ?>
 
-<h2 class="titulo-cuadrante">Guardias: <?= ucfirst($dia_actual) ?> (<?= date('d/m/Y') ?>)
-<span id="reloj" style="margin-left:1em; font-weight:normal;"></span>
+<h2 class="titulo-cuadrante">
+    <span class="titulo-izq">
+        <img src="/images/logoies.png" alt="Logo centro" style="height:40px;">
+    </span>
+
+    <span class="titulo-centro">
+        Guardias: <?= ucfirst($dia_actual) ?> (<?= date('d/m/Y') ?>)
+    </span>
+
+    <span class="titulo-der" id="reloj"></span>
 </h2>
+
 <script>
 function actualizarReloj() {
     const ahora = new Date();
     const horas = String(ahora.getHours()).padStart(2,'0');
     const minutos = String(ahora.getMinutes()).padStart(2,'0');
     const segundos = String(ahora.getSeconds()).padStart(2,'0');
-    const reloj = document.getElementById('reloj');
-    reloj.textContent = `${horas}:${minutos}:${segundos}`;
+    document.getElementById('reloj').textContent = `${horas}:${minutos}:${segundos}`;
 }
-
-// Actualizar cada segundo
 setInterval(actualizarReloj, 1000);
-actualizarReloj(); // mostrar de inmediato al cargar
+actualizarReloj();
 </script>
+
 <div class="scroll-container">
 <table class='tabla-guardias'>
 
@@ -49,21 +56,21 @@ actualizarReloj(); // mostrar de inmediato al cargar
 <tr>
     <th class="tramo">Tramo</th>
     <th class="guardia">Profesores Guardia</th>
-    <th class="ausencia">Ausencias - Grupo / Aula</th>
-    <th class="observaciones">Observaciones</th>
+    <th class="ausencia">Profesor ausente - Grupo / Aula - Observaciones</th>
+    <!--<th class="observaciones">Observaciones</th>-->
 </tr>
 </thead>
 
 <tbody>
-<?php
 
+<?php
 foreach ($tramos as $tramo) {
 
     $es_ahora = ($hora_actual >= $tramo['hora_inicio'] && $hora_actual <= $tramo['hora_fin'])
         ? "class='fila-actual'" : "";
 
     // =========================
-    // GUARDIAS (CORREGIDO)
+    // GUARDIAS
     // =========================
     $stmt = $pdo->prepare("
         SELECT p.id, p.nombre
@@ -106,7 +113,6 @@ foreach ($tramos as $tramo) {
     $lista_profesores = [];
 
     foreach ($profesores_guardia as $p) {
-
         if (isset($ausentes_por_id[$p['id']])) {
             $lista_profesores[] = "<span style='color:red;'>{$p['nombre']} (F)</span>";
         } else {
@@ -124,11 +130,9 @@ foreach ($tramos as $tramo) {
     $ids_guardia = array_flip(array_column($profesores_guardia, 'id'));
 
     $ausentes_agrupados = [];
-    $lista_obs = [];
 
     foreach ($ausentes as $a) {
 
-        // 🔴 EXCLUIR GUARDIAS
         if (isset($ids_guardia[$a['profesor_id']])) {
             continue;
         }
@@ -139,35 +143,44 @@ foreach ($tramos as $tramo) {
             $ausentes_agrupados[$id] = [
                 'nombre' => $a['nombre'],
                 'grupos' => [],
-                'aula' => $a['aula'] ?? ''
+                'aula' => $a['aula'] ?? '',
+                'observaciones' => []
             ];
         }
 
-        // Grupos sin duplicar
         if (!empty($a['grupo']) && !in_array($a['grupo'], $ausentes_agrupados[$id]['grupos'])) {
             $ausentes_agrupados[$id]['grupos'][] = $a['grupo'];
         }
 
-        // Observaciones únicas
-        if (!empty($a['observaciones']) && !in_array($a['observaciones'], $lista_obs)) {
-            $lista_obs[] = $a['observaciones'];
+        if (!empty($a['observaciones']) && !in_array($a['observaciones'], $ausentes_agrupados[$id]['observaciones'])) {
+            $ausentes_agrupados[$id]['observaciones'][] = $a['observaciones'];
         }
     }
 
-    // Construcción salida ausencias
+    // =========================
+    // CONSTRUIR COLUMNAS ALINEADAS
+    // =========================
     $lista_ausentes = [];
+    $lista_obs = [];
 
-    foreach ($ausentes_agrupados as $a) {
-
+    foreach ($ausentes_agrupados as $a) {        
         $grupos = implode(', ', $a['grupos']);
         $aula = $a['aula'];
+        $observaciones = $a['observaciones'];
 
         $texto = "<b>{$a['nombre']}</b>";
-
         if ($grupos) $texto .= " {$grupos}";
         if ($aula)   $texto .= " / {$aula}";
-
+        if ($observaciones) $texto .= " - <span class='observaciones'> " . implode('; ', $observaciones) . "</span>";
         $lista_ausentes[] = $texto;
+/*
+        // OBSERVACIONES (alineadas)
+        if (!empty($a['observaciones'])) {
+            $lista_obs[] = implode('<br>', $a['observaciones']);
+        } else {
+            $lista_obs[] = '';
+        }
+*/            
     }
 
     // =========================
@@ -180,7 +193,8 @@ foreach ($tramos as $tramo) {
     echo "<td class='guardia'>{$lista_profesores_html}</td>";
 
     echo "<td class='ausencia'>" . (empty($lista_ausentes) ? '' : implode('<hr>', $lista_ausentes)) . "</td>";
-    echo "<td class='observaciones'>" . (empty($lista_obs) ? '' : implode('<hr>', $lista_obs)) . "</td>";
+
+//    echo "<td class='observaciones'>" . (empty($lista_obs) ? '' : implode('<hr>', $lista_obs)) . "</td>";
 
     echo "</tr>";
 }

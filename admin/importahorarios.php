@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/db.php';
 
-echo "<h2>Importar horarios y guardias desde CSV</h2>";
+echo "<h2>Importar horarios y guardias desde CSV Peñalara</h2>";
 
 // Cache de profesores para no duplicar búsquedas
 $profesores_cache = [];
@@ -101,7 +101,7 @@ if(isset($_FILES['csv_file']) && $_FILES['csv_file']['error'] === UPLOAD_ERR_OK)
 }
 ?>
 
-<form method="post" enctype="multipart/form-data" action="">
+<form method="post" enctype="multipart/form-data" action="dashboard.php?seccion=importarhorarios">
     <label>Subir archivo CSV:</label>
     <input type="file" name="csv_file" accept=".csv">
     <button type="submit">Importar</button>

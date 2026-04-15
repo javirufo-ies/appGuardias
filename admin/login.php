@@ -26,17 +26,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Login - Guardias</title>
-    <link rel="stylesheet" href="../assets/css/estilos.css">
+    <link rel="stylesheet" href="../assets/css/estilos.css?v=<?= time() ?>">">
 </head>
-<body>
+<body class="login-body">
+
+<div class="theme-toggle">
+    <button type="button" onclick="toggleTheme()">🌓</button>
+</div>
+
+<div class="login-container animate-in">
+
+    <div class="login-logo">
+        <img src="../images/logo.png" alt="Logo del centro">
+    </div>
+
     <h1>Acceso Administración</h1>
-    <form method="POST">
-        <label>Usuario:</label><br>
-        <input type="text" name="usuario" required><br><br>
-        <label>Contraseña:</label><br>
-        <input type="password" name="clave" required><br><br>
+
+    <form method="POST" class="login-form <?= !empty($error) ? 'shake' : '' ?>">
+
+        <div class="input-group">
+            <span class="icon">👤</span>
+            <input type="text" name="usuario" placeholder="Usuario" required>
+        </div>
+
+        <div class="input-group">
+            <span class="icon">🔒</span>
+            <input type="password" name="clave" placeholder="Contraseña" required>
+        </div>
+
         <button type="submit">Entrar</button>
     </form>
-    <?php if (!empty($error)) echo "<p style='color:red'>$error</p>"; ?>
+
+    <?php if (!empty($error)) echo "<p class='error'>$error</p>"; ?>
+
+</div>
+
+<script>
+function toggleTheme() {
+    document.body.classList.toggle('dark');
+}
+</script>
+
 </body>
 </html>

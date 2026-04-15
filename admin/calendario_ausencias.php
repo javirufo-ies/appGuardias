@@ -73,9 +73,9 @@ h2 { text-align:center; }
 <body>
 
 <div class="nav">
-    <a href="calendario_ausencias.php?mes=<?= $prev->format('n') ?>&anio=<?= $prev->format('Y') ?>">⬅ Mes anterior</a>
+    <a href="dashboard.php?seccion=calendarioausencias&mes=<?= $prev->format('n') ?>&anio=<?= $prev->format('Y') ?>">⬅ Mes anterior</a>
     <h2><?= $mes ?>/<?= $anio ?></h2>
-    <a href="calendario_ausencias.php?mes=<?= $next->format('n') ?>&anio=<?= $next->format('Y') ?>">Mes siguiente ➡</a>
+    <a href="dashboard.php?seccion=calendarioausencias&mes=<?= $next->format('n') ?>&anio=<?= $next->format('Y') ?>">Mes siguiente ➡</a>
 </div>
 
 <div class="calendario">
@@ -104,7 +104,7 @@ for($d=1;$d<=$dias_mes;$d++){
 
 </div>
 
-<a href="dashboard.php">⬅ Volver</a>
+
 
 </body>
 </html>

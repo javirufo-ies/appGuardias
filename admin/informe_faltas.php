@@ -1,6 +1,5 @@
 <?php
 require_once __DIR__ . '/includes/db.php';
-
 $mes = $_GET['mes'] ?? date('n');
 $anio = $_GET['anio'] ?? date('Y');
 
@@ -48,7 +47,8 @@ form { margin-bottom:20px; }
 
 <h2>📊 Informe de ausencias</h2>
 
-<form method="get" action="informe_faltas.php">
+<form method="get" action="dashboard.php">
+     <input type="hidden" name="seccion" value="informefaltas">
     <label>Mes:</label>
     <select name="mes">
         <?php for($m=1;$m<=12;$m++): ?>
@@ -100,8 +100,6 @@ if (empty($data)): ?>
 <?php endforeach; ?>
 <?php endif; ?>
 </table>
-
-<a href="dashboard.php">⬅ Volver</a>
 
 </body>
 </html>

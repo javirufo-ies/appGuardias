@@ -45,7 +45,11 @@ if (isset($_GET['borrar_id'])) {
     $stmt->execute([$_GET['borrar_id']]);
     $mensaje = "Usuario eliminado.";
 }
-
+// --- Roles de usuario
+$stmt = $pdo->query("SHOW COLUMNS FROM usuarios LIKE 'rol'");
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+preg_match("/^enum\((.*)\)$/", $row['Type'], $matches);
+$roles = str_getcsv($matches[1], ',', "'");
 // --- Listar usuarios
 $usuarios = $pdo->query("SELECT id, nombre, rol FROM usuarios ORDER BY nombre")->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -73,10 +77,11 @@ button:hover { background-color: #0056b3; }
 <form method="post">
     <input type="text" name="nuevo_usuario" placeholder="Nombre de usuario" required>
     <input type="password" name="password" placeholder="Contraseña" required>
-    <select name="rol">
-        <option value="profesor">Profesor</option>
-        <option value="admin">Administrador</option>
-    </select>
+<select name="rol">
+    <?php foreach ($roles as $rol): ?>
+        <option value="<?= $rol ?>"><?= ucfirst($rol) ?></option>
+    <?php endforeach; ?>
+</select>
     <button type="submit">Añadir</button>
 </form>
 
@@ -96,10 +101,13 @@ button:hover { background-color: #0056b3; }
                     <input type="hidden" name="editar_id" value="<?= $u['id'] ?>">
                     <input type="text" name="editar_nombre" value="<?= htmlspecialchars($u['nombre']) ?>" required>
                     <input type="password" name="editar_password" placeholder="Nueva contraseña">
-                    <select name="editar_rol">
-                        <option value="profesor" <?= $u['rol']=='profesor'?'selected':'' ?>>Profesor</option>
-                        <option value="admin" <?= $u['rol']=='admin'?'selected':'' ?>>Administrador</option>
-                    </select>
+<select name="editar_rol">
+    <?php foreach ($roles as $rol): ?>
+        <option value="<?= $rol ?>" <?= $u['rol'] === $rol ? 'selected' : '' ?>>
+            <?= ucfirst($rol) ?>
+        </option>
+    <?php endforeach; ?>
+</select>
                     <button type="submit">Actualizar</button>
                 </form>
                 <a href="?borrar_id=<?= $u['id'] ?>" onclick="return confirm('¿Seguro que quieres borrar este usuario?')">Borrar</a>
@@ -109,6 +117,6 @@ button:hover { background-color: #0056b3; }
     </tbody>
 </table>
 
-<a href="dashboard.php" class="btn-dashboard">⬅ Volver al Dashboard</a>
+
 </body>
 </html>

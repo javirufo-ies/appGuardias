@@ -1,44 +1,179 @@
-body {
+
+/* =========================
+   BASE
+========================= */
+body.admin-body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: system-ui, Arial;
+    background: #f3f4f6;
+}
+
+/* DARK MODE */
+body.dark {
+    background: #0f172a;
+    color: white;
+}
+
+/* =========================
+   LAYOUT
+========================= */
+.layout {
     display: flex;
+    height: 100vh;
 }
 
+/* =========================
+   SIDEBAR
+========================= */
+
+/* =========================
+   SIDEBAR BASE
+========================= */
 .sidebar {
-    width: 200px;
-    background-color: #2c3e50;
-    color: #fff;
-    min-height: 100vh;
-    padding: 20px;
+    width: 240px;
+    background: #111827;
+    color: white;
+    height: 100vh;
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    transition: width 0.25s ease;
+    overflow: hidden;
 }
 
-.sidebar h2 {
-    text-align: center;
-    margin-bottom: 20px;
+.sidebar .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
 }
 
-.sidebar ul {
-    list-style: none;
-    padding: 0;
+.sidebar .brand img {
+    width: 32px;
 }
 
-.sidebar ul li {
-    margin: 15px 0;
+.sidebar .menu {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 10px;
 }
 
-.sidebar ul li a {
-    color: #fff;
+.sidebar .menu a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border-radius: 8px;
+    color: #cbd5e1;
     text-decoration: none;
+    transition: 0.2s;
 }
 
-.sidebar ul li a:hover {
-    text-decoration: underline;
+.sidebar .menu a:hover {
+    background: #1f2937;
+    color: white;
 }
 
+/* ICONOS */
+.sidebar i {
+    width: 20px;
+    text-align: center;
+}
+
+/* BOTÓN TOGGLE */
+.toggle-btn {
+    margin-top: auto;
+    background: #1f2937;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+/* =========================
+   COLAPSADO (NOTION STYLE)
+========================= */
+.sidebar.collapsed {
+    width: 70px;
+}
+
+/* OCULTAR TEXTO */
+.sidebar.collapsed .text {
+    display: none;
+}
+
+/* CENTRAR ICONOS */
+.sidebar.collapsed .menu a {
+    justify-content: center;
+}
+
+/* BRAND COMPACTO */
+.sidebar.collapsed .brand span {
+    display: none;
+}
+
+/* CONTENT AJUSTE */
+.content {
+    margin-left: 240px;
+    transition: margin-left 0.25s ease;
+}
+
+.sidebar.collapsed ~ .content {
+    margin-left: 70px;
+}
+
+
+
+
+
+/* =========================
+   CONTENT
+========================= */
 .content {
     flex: 1;
     padding: 20px;
-    background-color: #ecf0f1;
-    min-height: 100vh;
     overflow-y: auto;
+}
+
+/* TOPBAR */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.topbar h1 {
+    font-size: 18px;
+}
+
+/* =========================
+   PAGE ANIMATION
+========================= */
+.animate {
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================
+   MOBILE
+========================= */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 70px;
+    }
+
+    .menu a {
+        font-size: 0;
+        position: relative;
+    }
+
+    .menu a::before {
+        font-size: 18px;
+    }
 }

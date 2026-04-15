@@ -1,6 +1,187 @@
 :root {
     --num-filas: 1;
 }
+
+
+
+
+/*------------------------
+LOGIN
+------------------------*/
+/* =========================
+   BASE + BACKGROUND
+========================= */
+.login-body {
+    margin: 0;
+    font-family: system-ui, Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    transition: 0.3s;
+}
+
+/* MODO CLARO */
+body.dark {
+    background: linear-gradient(135deg, #e5e7eb, #f9fafb);
+}
+
+/* =========================
+   CONTAINER
+========================= */
+.login-container {
+    width: 100%;
+    max-width: 380px;
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+    text-align: center;
+    transition: 0.3s;
+}
+
+body.dark .login-container {
+    background: #ffffff;
+}
+
+/* =========================
+   LOGO
+========================= */
+.login-logo img {
+    width: 110px;
+    margin-bottom: 10px;
+}
+
+/* =========================
+   TITLE
+========================= */
+.login-container h1 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #111827;
+}
+
+/* =========================
+   FORM
+========================= */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    padding: 10px;
+    transition: 0.2s;
+}
+
+.input-group:focus-within {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.2);
+}
+
+.input-group .icon {
+    margin-right: 8px;
+}
+
+.input-group input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 14px;
+}
+
+/* =========================
+   BUTTON
+========================= */
+button {
+    margin-top: 10px;
+    padding: 12px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+}
+
+/* =========================
+   ERROR
+========================= */
+.error {
+    margin-top: 15px;
+    color: #dc2626;
+    font-size: 14px;
+}
+
+/* =========================
+   ANIMACIÓN ENTRADA
+========================= */
+.animate-in {
+    animation: fadeInUp 0.6s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========================
+   SHAKE ERROR
+========================= */
+.shake {
+    animation: shake 0.4s;
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
+}
+
+/* =========================
+   THEME BUTTON
+========================= */
+.theme-toggle {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+.theme-toggle button {
+    background: white;
+    color: black;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    font-size: 18px;
+}
+
+
+
+
+
 /* ----------------------------
 RESET Y CONFIGURACIÓN TV
 ---------------------------- */
@@ -88,11 +269,31 @@ TABLA AUTO-AJUSTABLE
 .titulo-cuadrante {
     margin: 0;
     padding: 1vh;
+    display: flex ;
     text-align: center;
-    background: #333;
+    background: #cfcfca9f;
     color: white;
     font-size: clamp(18px, 3vh, 32px);
 }
+
+.titulo-izq, .titulo-centro, .titulo-der{
+    flex:1;
+}
+
+.titulo-izq{
+    display:flex;
+    justify-content:flex-start;
+}
+
+.titulo-centro{
+    text-align:center;
+}
+
+.titulo-der{
+    display:flex;
+    justify-content:flex-end;
+}
+
 
 /* Resaltado de la guardia actual */
 .fila-actual {
@@ -138,7 +339,7 @@ TABLA AUTO-AJUSTABLE
 
 .tabla-guardias th.ausencia,
 .tabla-guardias td.ausencia {
-    width: 20%; /* Ausencias - Grupo / Aula */
+    width: 80%; /* Ausencias - Grupo / Aula */
 }
 
 .tabla-guardias th.observaciones,
@@ -147,7 +348,9 @@ TABLA AUTO-AJUSTABLE
 }
     
 
-
+.observaciones {
+    color: #ff0000;
+}
 
 #mensajes h3 {
     flex: 0 0 auto; /* ocupa su altura natural */

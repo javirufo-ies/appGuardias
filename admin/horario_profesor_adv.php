@@ -307,7 +307,7 @@ document.getElementById('formHorario').addEventListener('submit',function(e){
 });
 
 </script>
-<a href="dashboard.php">⬅ Volver</a>
+<a href="dashboard.php?seccion=profesores">⬅ Volver</a>
 
 </body>
 </html>
