@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Login - Guardias</title>
-    <link rel="stylesheet" href="../assets/css/estilos.css?v=<?= time() ?>">">
+    <link rel="stylesheet" href="../assets/css/estilos.css?v=<?= time() ?>">
 </head>
 <body class="login-body">
 

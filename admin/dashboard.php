@@ -18,56 +18,51 @@ if (!isset($_SESSION['usuario'])) header('Location: login.php');
 <aside class="sidebar" id="sidebar">
 
     <div class="brand">
-        <img src="../images//logo.png" alt="Logo">
+        <img src="../images/logo.png" alt="Logo">
         <span class="text">Admin</span>
     </div>
 
     <nav class="menu">
 
-        <a href="dashboard.php?seccion=profesores">
+        <a href="dashboard.php?seccion=profesores" data-sec="profesores">
             <i class="fa-solid fa-chalkboard-user"></i>
             <span class="text">Profesores</span>
         </a>
 
-        <a href="dashboard.php?seccion=tramos">
+        <a href="dashboard.php?seccion=tramos" data-sec="tramos">
             <i class="fa-solid fa-clock"></i>
             <span class="text">Tramos</span>
         </a>
-<!--
-        <a href="dashboard.php?seccion=guardias">
+
+        <a href="dashboard.php?seccion=guardias" data-sec="guardias">
             <i class="fa-solid fa-shield-halved"></i>
             <span class="text">Guardias</span>
         </a>
--->
-        <a href="dashboard.php?seccion=ausencias">
+
+        <a href="dashboard.php?seccion=ausencias" data-sec="ausencias">
             <i class="fa-solid fa-user-xmark"></i>
             <span class="text">Ausencias</span>
         </a>
 
-        <a href="dashboard.php?seccion=mensajes">
+        <a href="dashboard.php?seccion=mensajes" data-sec="mensajes">
             <i class="fa-solid fa-comment"></i>
             <span class="text">Mensajes</span>
         </a>
 
-        <a href="dashboard.php?seccion=usuarios">
+        <a href="dashboard.php?seccion=usuarios" data-sec="usuarios">
             <i class="fa-solid fa-users"></i>
             <span class="text">Usuarios</span>
         </a>
 
-        <a href="dashboard.php?seccion=informefaltas">
+        <a href="dashboard.php?seccion=informefaltas" data-sec="informefaltas">
             <i class="fa-solid fa-chart-line"></i>
             <span class="text">Informe</span>
         </a>
-        <a href="dashboard.php?seccion=calendarioausencias">
+
+        <a href="dashboard.php?seccion=calendarioausencias" data-sec="calendarioausencias">
             <i class="fa-solid fa-calendar-days"></i>
             <span class="text">Calendario de Ausencias</span>
         </a>
-
-        <a href="dashboard.php?seccion=importarhorarios">
-            <i class="fa-solid fa-file-import"></i>
-            <span class="text">Importar horarios</span>
-        </a>        
-
         <a href="logout.php" class="logout">
             <i class="fa-solid fa-right-from-bracket"></i>
             <span class="text">Salir</span>
@@ -75,13 +70,17 @@ if (!isset($_SESSION['usuario'])) header('Location: login.php');
 
     </nav>
 
-    <button class="toggle-btn" onclick="toggleSidebar()">
+    <!-- BOTÓN SIDEBAR -->
+    <button class="sidebar-btn" onclick="toggleSidebar()">
         <i class="fa-solid fa-bars"></i>
     </button>
-<button class="theme-btn" onclick="toggleTheme()">
-    <i class="fa-solid fa-moon"></i>
-    <span class="text">Tema</span>
-</button>
+
+    <!-- BOTÓN TEMA -->
+    <button class="theme-btn" onclick="toggleTheme()">
+        <i id="themeIcon" class="fa-solid fa-moon"></i>
+        <span class="text">Tema</span>
+    </button>
+
 </aside>
 
     <!-- CONTENT -->
@@ -118,10 +117,10 @@ if (!isset($_SESSION['usuario'])) header('Location: login.php');
 </div>
 
 <script>
-function toggleTheme(){
-    document.body.classList.toggle('dark');
-}
 
+/* =========================
+   SIDEBAR
+========================= */
 function toggleSidebar() {
     const sb = document.getElementById('sidebar');
     sb.classList.toggle('collapsed');
@@ -132,10 +131,46 @@ function toggleSidebar() {
     );
 }
 
+/* =========================
+   THEME
+========================= */
+function toggleTheme() {
+    document.body.classList.toggle('dark');
+
+    const isDark = document.body.classList.contains('dark');
+
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+
+    document.getElementById('themeIcon').className =
+        isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+}
+
+/* =========================
+   ACTIVE MENU AUTO
+========================= */
 window.addEventListener('load', () => {
-    const state = localStorage.getItem('sidebar');
-    if (state === '1') {
+
+    /* SIDEBAR STATE */
+    if (localStorage.getItem('sidebar') === '1') {
         document.getElementById('sidebar').classList.add('collapsed');
+    }
+
+    /* THEME STATE */
+    if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark');
+        document.getElementById('themeIcon').className = 'fa-solid fa-sun';
+    }
+
+    /* ACTIVE MENU AUTOMÁTICO */
+    const url = new URL(window.location.href);
+    const sec = url.searchParams.get('seccion');
+
+    if (sec) {
+        document.querySelectorAll('.menu a').forEach(a => {
+            if (a.dataset.sec === sec) {
+                a.classList.add('active');
+            }
+        });
     }
 });
 
