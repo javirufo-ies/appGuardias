@@ -6,6 +6,77 @@ $hoy = date('Y-m-d');
 $stmt = $pdo->prepare("SELECT * FROM mensajes WHERE fecha_inicio <= ? AND fecha_fin >= ? ORDER BY fecha_inicio ASC");
 $stmt->execute([$hoy, $hoy]);
 $mensajes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+
+// --- CALENDARIO EXTRAESCOLARES
+function parseICS($ics) {
+    $eventos = [];
+    $lineas = explode("\n", $ics);
+
+    $evento = [];
+
+    foreach ($lineas as $linea) {
+        $linea = trim($linea);
+
+        if ($linea == "BEGIN:VEVENT") {
+            $evento = [];
+        }
+
+        if (strpos($linea, "SUMMARY:") === 0) {
+            $evento['titulo'] = substr($linea, 8);
+        }
+
+        if (strpos($linea, "DTSTART:") === 0) {
+            $evento['inicio'] = substr($linea, 8);
+        }
+
+        if (strpos($linea, "DTEND:") === 0) {
+            $evento['fin'] = substr($linea, 6);
+        }
+
+        if ($linea == "END:VEVENT") {
+            $eventos[] = $evento;
+        }
+    }
+
+    return $eventos;
+}
+
+
+function convertirFecha($fechaICS) {
+    return DateTime::createFromFormat('Ymd\THis\Z', $fechaICS);
+}
+
+
+$url = "https://calendar.google.com/calendar/ical/c_caea1e0b1c3d1f275836e1e0acb4c80891d4967f32bac019dfabde4bf43bef63%40group.calendar.google.com/public/basic.ics";
+
+$ics = file_get_contents($url);
+
+if ($ics === false) {
+    die("Error al obtener el calendario");
+}
+
+$eventos = parseICS($ics);
+
+$inicioSemana = new DateTime('monday this week');
+$finSemana = new DateTime('sunday this week 23:59:59');
+
+$eventosSemana = [];
+
+foreach ($eventos as $ev) {
+    $inicio = convertirFecha($ev['inicio']);
+
+    if ($inicio >= $inicioSemana && $inicio <= $finSemana) {
+        $dia = $inicio->format('Y-m-d');
+        $eventosSemana[$dia][] = [
+            'titulo' => $ev['titulo'],
+            'hora' => $inicio->format('H:i')
+        ];
+    }
+}
+
+var_dump($eventosSemana);
 ?>
 
 <div id="mensajes-contenido">        
@@ -45,16 +116,6 @@ if(total > 0){
     }, 3000);
 }
 
-// --- LÓGICA DEL RELOJ ---
-/*
-function actualizarReloj() {
-    const ahora = new Date();
-    const h = String(ahora.getHours()).padStart(2, '0');
-    const m = String(ahora.getMinutes()).padStart(2, '0');
-    const s = String(ahora.getSeconds()).padStart(2, '0');
-    document.getElementById('reloj-digital').textContent = `${h}:${m}:${s}`;
-}
-setInterval(actualizarReloj, 1000);
-actualizarReloj();
-*/
+
+
 </script>
