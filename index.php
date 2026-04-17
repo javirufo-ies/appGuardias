@@ -9,6 +9,25 @@
     <!-- Enlace al único fichero de estilos -->
     <link rel="stylesheet" href="assets/css/estilos.css?v=1.0">    
     <script>
+    function fitTextToContainer(el) {
+        let min = 10;
+        let max = 40;
+
+        while (min < max) {
+            let mid = Math.floor((min + max) / 2);
+            el.style.fontSize = mid + "px";
+
+            if (el.scrollHeight > el.clientHeight) {
+                max = mid - 1;
+            } else {
+                min = mid + 1;
+            }
+        }
+
+        el.style.fontSize = max + "px";
+    }
+
+
 
         function ajustarTabla() {
             // Buscamos las filas reales que imprimió el PHP
@@ -55,14 +74,15 @@ function esperarTablaYajustar() {
 
 </head>
 <body>
+    <div class="wrapper">
     <div id="principal">
         <?php include __DIR__ . '/cuadrante.php'; ?>        
     </div>
 
-    <div id="mensajes">
-        <h3>Mensajes y Actividades</h3>
+    <div id="mensajes">        
         <?php include __DIR__ . '/mensajes.php'; ?>
     </div>
-
+    </div>
+            
 </body>
 </html>

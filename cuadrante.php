@@ -25,6 +25,28 @@ $tramos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $fecha_hoy = date('Y-m-d');
 ?>
 
+<script>
+
+function actualizarReloj() {
+    const ahora = new Date();
+    const horas = String(ahora.getHours()).padStart(2,'0');
+    const minutos = String(ahora.getMinutes()).padStart(2,'0');
+    const segundos = String(ahora.getSeconds()).padStart(2,'0');
+    document.getElementById('reloj').textContent = `${horas}:${minutos}:${segundos}`;
+}
+setInterval(actualizarReloj, 1000);
+actualizarReloj();
+
+window.addEventListener('load', () => {
+    document.querySelectorAll('.cuadrante').forEach(fitTextToContainer);
+});
+
+window.addEventListener('resize', () => {
+    document.querySelectorAll('.cuadrante').forEach(fitTextToContainer);
+});
+</script>
+
+
 <h2 class="titulo-cuadrante">
     <span class="titulo-izq">
         <img src="/images/logo.png" alt="Logo centro" style="height:40px;">
@@ -38,17 +60,6 @@ $fecha_hoy = date('Y-m-d');
     <span class="titulo-der" id="reloj"></span>
 </h2>
 
-<script>
-function actualizarReloj() {
-    const ahora = new Date();
-    const horas = String(ahora.getHours()).padStart(2,'0');
-    const minutos = String(ahora.getMinutes()).padStart(2,'0');
-    const segundos = String(ahora.getSeconds()).padStart(2,'0');
-    document.getElementById('reloj').textContent = `${horas}:${minutos}:${segundos}`;
-}
-setInterval(actualizarReloj, 1000);
-actualizarReloj();
-</script>
 
 <div class="scroll-container">
 <table class='tabla-guardias'>

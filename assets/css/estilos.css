@@ -17,7 +17,7 @@ LOGIN
     display: flex;
     justify-content: center;
     align-items: center;
-
+    overflow: hidden   ;
     background: linear-gradient(135deg, #0f172a, #1e293b);
     transition: 0.3s;
 }
@@ -196,17 +196,22 @@ html, body {
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden; /* Bloqueamos scroll por completo para la tele */
+}
 
+
+
+.wrapper {
+    height: 100vh;              /* ocupa toda la pantalla */
+    display: flex;
+    flex-direction: column;    /* apila verticalmente */
+    overflow: hidden;          /* evita que una parte se salga */
 }
 
 /* ----------------------------
 LAYOUT 80/20 REFORZADO
 ---------------------------- */
 #principal {
-    height: 80vh;
+    height: 0 0 80%;
     display: flex;
     flex-direction: column;
     padding: 0px;
@@ -214,13 +219,12 @@ LAYOUT 80/20 REFORZADO
 }
 
 #mensajes {
-    height: 20vh;
+    height: 0 0 20%;
     display: flex;
     flex-direction: column;
     min-height: 0;
     overflow: hidden;
-
-    border-top: 5px solid #007bff; /* Línea separadora azul */
+    border-top: 0px solid #007bff; /* Línea separadora azul */
 }
 /* ----------------------------
 TABLA AUTO-AJUSTABLE
@@ -244,9 +248,9 @@ TABLA AUTO-AJUSTABLE
     padding: 1vh;
     display: flex ;
     text-align: center;
-    background: #cfcfca9f;
+    background: #8803ed9f;
     color: white;
-    font-size: clamp(18px, 3vh, 32px);
+    font-size: clamp(10px, 3vh, 32px);
 }
 
 .titulo-izq, .titulo-centro, .titulo-der{
@@ -271,8 +275,8 @@ TABLA AUTO-AJUSTABLE
 /* Resaltado de la guardia actual */
 .fila-actual {
     background-color: greenyellow !important; /* Amarillo suave */
-    outline: 4px solid #ffc107;
-    outline-offset: -4px;
+    outline: 2px solid #ffc107;
+    outline-offset: -2px;
     font-weight: bold;
 }
 
@@ -287,7 +291,7 @@ TABLA AUTO-AJUSTABLE
     padding: 2px;
     border: 1px solid #ccc;
     text-align: left;
-    font-size: clamp(24px, 2vh, 32px) !important; /* ajusta automáticamente */
+    font-size: clamp(10px, 2vh, 12px) !important; /* ajusta automáticamente */
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
@@ -295,6 +299,7 @@ TABLA AUTO-AJUSTABLE
 .scroll-container {
     flex: 1; /* Esto hace que la tabla se estire hasta el borde de la sección mensajes */
     display: flex;
+    overflow: hidden;
 }
 
 
