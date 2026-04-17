@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/admin/includes/db.php';
+require_once __DIR__ . '/includes/db.php';
 $hoy = date('Y-m-d');
 
 // Mensajes activos
@@ -10,10 +10,10 @@ $mensajes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
 // --- CALENDARIO EXTRAESCOLARES
+
 function parseICS($ics) {
     $eventos = [];
     $lineas = explode("\n", $ics);
-
     $evento = [];
 
     foreach ($lineas as $linea) {
@@ -23,20 +23,22 @@ function parseICS($ics) {
             $evento = [];
         }
 
-        if (strpos($linea, "SUMMARY:") === 0) {
-            $evento['titulo'] = substr($linea, 8);
+        if (strpos($linea, "SUMMARY") === 0) {
+            $evento['titulo'] = explode(":", $linea, 2)[1] ?? '';
         }
 
-        if (strpos($linea, "DTSTART:") === 0) {
-            $evento['inicio'] = substr($linea, 8);
+        if (strpos($linea, "DTSTART") === 0) {
+            $evento['inicio'] = explode(":", $linea, 2)[1] ?? '';
         }
 
-        if (strpos($linea, "DTEND:") === 0) {
-            $evento['fin'] = substr($linea, 6);
+        if (strpos($linea, "DTEND") === 0) {
+            $evento['fin'] = explode(":", $linea, 2)[1] ?? '';
         }
 
         if ($linea == "END:VEVENT") {
-            $eventos[] = $evento;
+            if (!empty($evento)) {
+                $eventos[] = $evento;
+            }
         }
     }
 
@@ -45,14 +47,34 @@ function parseICS($ics) {
 
 
 function convertirFecha($fechaICS) {
-    return DateTime::createFromFormat('Ymd\THis\Z', $fechaICS);
+
+    // Evento de día completo
+    if (strlen($fechaICS) == 8) {
+        return DateTime::createFromFormat('Ymd', $fechaICS);
+    }
+
+    // Evento con hora
+    if (strpos($fechaICS, 'T') !== false) {
+        return DateTime::createFromFormat('Ymd\THis', str_replace('Z','',$fechaICS));
+    }
+
+    return null;
 }
 
 
-$url = "https://calendar.google.com/calendar/ical/c_caea1e0b1c3d1f275836e1e0acb4c80891d4967f32bac019dfabde4bf43bef63%40group.calendar.google.com/public/basic.ics";
+$url = "https://calendar.google.com/calendar/embed?src=c_caea1e0b1c3d1f275836e1e0acb4c80891d4967f32bac019dfabde4bf43bef63%40group.calendar.google.com&ctz=Europe%2FMadrid";
+function obtenerICS($url) {
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    $data = curl_exec($ch);
+    curl_close($ch);
+    return $data;
+}
 
-$ics = file_get_contents($url);
 
+$ics = obtenerICS($url);
+file_put_contents(__DIR__ . "/debug_ics.txt", $ics);error_reporting(E_ALL);
 if ($ics === false) {
     die("Error al obtener el calendario");
 }
@@ -76,7 +98,6 @@ foreach ($eventos as $ev) {
     }
 }
 
-var_dump($eventosSemana);
 ?>
 
 <div id="mensajes-contenido">        

@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__ . '/includes/db.php';
+require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/funciones.php';
 
 // --- Configuración días
 $dias_num = [1=>'Lunes',2=>'Martes',3=>'Miércoles',4=>'Jueves',5=>'Viernes'];
