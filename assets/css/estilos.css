@@ -196,12 +196,13 @@ html, body {
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: clamp(12px, 1vw, 40px);
 }
 
 
 
 .wrapper {
-    height: 100vh;              /* ocupa toda la pantalla */
+    min-height: 100vh;              /* ocupa toda la pantalla */
     display: flex;
     flex-direction: column;    /* apila verticalmente */
     overflow: hidden;          /* evita que una parte se salga */
@@ -210,21 +211,22 @@ html, body {
 /* ----------------------------
 LAYOUT 80/20 REFORZADO
 ---------------------------- */
-#principal {
-    height: 0 0 80%;
-    display: flex;
-    flex-direction: column;
-    padding: 0px;
+#principal {    
+    
+    flex: 8;
+    flex-basis: 0;
+    overflow: hidden;
     background: white;
+    min-height: 0;
+    font-size: 1rem;
 }
 
-#mensajes {
-    height: 0 0 20%;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
+#mensajes {    
+    flex: 2;
+    flex-basis: 0;
     overflow: hidden;
-    border-top: 0px solid #007bff; /* Línea separadora azul */
+    min-height: 0;    
+    border-top: 1px solid #007bff; /* Línea separadora azul */
 }
 /* ----------------------------
 TABLA AUTO-AJUSTABLE
@@ -291,7 +293,7 @@ TABLA AUTO-AJUSTABLE
     padding: 2px;
     border: 1px solid #ccc;
     text-align: left;
-    font-size: clamp(10px, 2vh, 12px) !important; /* ajusta automáticamente */
+    /*font-size: clamp(10px, 2vh, 12px) !important;*/
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
@@ -308,16 +310,19 @@ TABLA AUTO-AJUSTABLE
 .tabla-guardias th.tramo,
 .tabla-guardias td.tramo {
     width: 8%; /* Tramo de hora más estrecho */
+    align-items: center;
 }
 
 .tabla-guardias th.guardia,
 .tabla-guardias td.guardia {
     width: 12%; /* Profesores de guardia */
+    align-items: center;
 }
 
 .tabla-guardias th.ausencia,
 .tabla-guardias td.ausencia {
     width: 80%; /* Ausencias - Grupo / Aula */
+    align-items: center;
 }
 
 .tabla-guardias th.observaciones,
@@ -385,7 +390,7 @@ TABLA AUTO-AJUSTABLE
 
 .slide-text p {
     margin: 0;
-    font-size: clamp(12px, 2vh, 24px); /* ajusta automáticamente */
+   /* font-size: clamp(12px, 2vh, 24px);  ajusta automáticamente */
 }
 
 
@@ -393,22 +398,31 @@ TABLA AUTO-AJUSTABLE
 ESTILOS PARA EL PANEL DE MENSAJES Y ACTIVIDADES
 */
 .panel {
-    display: flex !important; 
+   /* display: flex !important; 
     flex-direction: row !important;
-    flex-wrap: nowrap;
-    gap: 20px;
     width: 100%;
     height: 100vh;
+    */
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
 
 
 
 .mensajes {
     
+    flex: 1 1 0%;    /* 50% / 50% real */
+    min-width: 0;   /* IMPORTANTE para evitar desbordes */
+
     color: white;
 }
 
 .actividades {
+    
+    flex: 1 1 0%;    /* 50% / 50% real */
+    min-width: 0;   /* IMPORTANTE para evitar desbordes */
+
     background: #f4f4f4;
     overflow-y: auto;
 }

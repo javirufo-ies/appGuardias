@@ -28,11 +28,13 @@ $fecha_hoy = date('Y-m-d');
 <script>
 
 function actualizarReloj() {
+    
     const ahora = new Date();
     const horas = String(ahora.getHours()).padStart(2,'0');
     const minutos = String(ahora.getMinutes()).padStart(2,'0');
     const segundos = String(ahora.getSeconds()).padStart(2,'0');
     document.getElementById('reloj').textContent = `${horas}:${minutos}:${segundos}`;
+    
 }
 setInterval(actualizarReloj, 1000);
 actualizarReloj();
@@ -62,7 +64,7 @@ window.addEventListener('resize', () => {
 
 
 <div class="scroll-container">
-<table class='tabla-guardias'>
+<table class='tabla-guardias' id="tabla-cuadrante">
 
 <thead>
 <tr>

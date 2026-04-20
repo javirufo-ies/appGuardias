@@ -34,8 +34,7 @@ foreach ($eventosSemana as $ev) {
 
 ?>
 <div class="panel">
-<div id="mensajes-contenido">
-    <h3>Anuncios</h3>
+<div id="mensajes-contenido">    
         <?php foreach($mensajes as $m): ?>
             <span class="slide">
                 <span class="slide-content">
