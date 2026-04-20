@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__ . '/includes/db.php';
+require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/funciones.php';
 $mes = $_GET['mes'] ?? date('n');
 $anio = $_GET['anio'] ?? date('Y');
 

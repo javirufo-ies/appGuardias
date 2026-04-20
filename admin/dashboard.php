@@ -34,10 +34,6 @@ if (!isset($_SESSION['usuario'])) header('Location: login.php');
             <span class="text">Tramos</span>
         </a>
 
-        <a href="dashboard.php?seccion=guardias" data-sec="guardias">
-            <i class="fa-solid fa-shield-halved"></i>
-            <span class="text">Guardias</span>
-        </a>
 
         <a href="dashboard.php?seccion=ausencias" data-sec="ausencias">
             <i class="fa-solid fa-user-xmark"></i>
@@ -63,6 +59,12 @@ if (!isset($_SESSION['usuario'])) header('Location: login.php');
             <i class="fa-solid fa-calendar-days"></i>
             <span class="text">Calendario de Ausencias</span>
         </a>
+
+        <a href="dashboard.php?seccion=importarhorarios" data-sec="importarhorarios">
+            <i class="fa-solid fa-file-export"></i>
+            <span class="text">Importar horarios</span>
+        </a>
+
         <a href="logout.php" class="logout">
             <i class="fa-solid fa-right-from-bracket"></i>
             <span class="text">Salir</span>

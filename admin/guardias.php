@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__ . '/includes/db.php';
+require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/funciones.php';
 
 // --- 1️⃣ Obtener profesores
 $profesores = $pdo->query("SELECT id, nombre FROM profesores ORDER BY nombre")->fetchAll(PDO::FETCH_ASSOC);

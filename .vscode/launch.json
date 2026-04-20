@@ -6,10 +6,6 @@
       "type": "php",
       "request": "launch",
       "port": 9003,
-      "hostname": "10.0.0.51",
-      "pathMappings": {
-        "/var/www/appguardias": "${workspaceFolder}"
-      }
     }
   ]
 }

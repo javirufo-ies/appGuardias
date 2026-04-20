@@ -4,7 +4,6 @@
 
 
 
-
 /*------------------------
 LOGIN
 ------------------------*/
@@ -18,7 +17,7 @@ LOGIN
     display: flex;
     justify-content: center;
     align-items: center;
-
+    overflow: hidden   ;
     background: linear-gradient(135deg, #0f172a, #1e293b);
     transition: 0.3s;
 }
@@ -197,31 +196,37 @@ html, body {
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden; /* Bloqueamos scroll por completo para la tele */
+    font-size: clamp(12px, 1vw, 40px);
+}
 
+
+
+.wrapper {
+    min-height: 100vh;              /* ocupa toda la pantalla */
+    display: flex;
+    flex-direction: column;    /* apila verticalmente */
+    overflow: hidden;          /* evita que una parte se salga */
 }
 
 /* ----------------------------
 LAYOUT 80/20 REFORZADO
 ---------------------------- */
-#principal {
-    height: 80vh;
-    display: flex;
-    flex-direction: column;
-    padding: 0px;
+#principal {    
+    
+    flex: 8;
+    flex-basis: 0;
+    overflow: hidden;
     background: white;
+    min-height: 0;
+    font-size: 1rem;
 }
 
-#mensajes {
-    height: 20vh;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
+#mensajes {    
+    flex: 2;
+    flex-basis: 0;
     overflow: hidden;
-
-    border-top: 5px solid #007bff; /* Línea separadora azul */
+    min-height: 0;    
+    border-top: 1px solid #007bff; /* Línea separadora azul */
 }
 /* ----------------------------
 TABLA AUTO-AJUSTABLE
@@ -237,33 +242,7 @@ TABLA AUTO-AJUSTABLE
     height: 100%;
     border-collapse: collapse;
 }
-/*
-.tabla-guardias thead {
-   
-    width: 100%;
-    table-layout: fixed;
-}
 
-.tabla-guardias tbody {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-
-.tabla-guardias tbody tr {
-   
-    width: 100%;
-    table-layout: fixed;
-    flex: 1; 
-}
-
-.tabla-guardias tbody td {
-   
-    width: 100%;
-    table-layout: fixed;
-    flex: 1; 
-}
-*/
 
 /* Ajuste para el título dentro de la zona 80% */
 .titulo-cuadrante {
@@ -271,9 +250,9 @@ TABLA AUTO-AJUSTABLE
     padding: 1vh;
     display: flex ;
     text-align: center;
-    background: #cfcfca9f;
+    background: #8803ed9f;
     color: white;
-    font-size: clamp(18px, 3vh, 32px);
+    font-size: clamp(10px, 3vh, 32px);
 }
 
 .titulo-izq, .titulo-centro, .titulo-der{
@@ -298,8 +277,8 @@ TABLA AUTO-AJUSTABLE
 /* Resaltado de la guardia actual */
 .fila-actual {
     background-color: greenyellow !important; /* Amarillo suave */
-    outline: 4px solid #ffc107;
-    outline-offset: -4px;
+    outline: 2px solid #ffc107;
+    outline-offset: -2px;
     font-weight: bold;
 }
 
@@ -314,7 +293,7 @@ TABLA AUTO-AJUSTABLE
     padding: 2px;
     border: 1px solid #ccc;
     text-align: left;
-    font-size: clamp(24px, 2vh, 32px) !important; /* ajusta automáticamente */
+    /*font-size: clamp(10px, 2vh, 12px) !important;*/
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
@@ -322,6 +301,7 @@ TABLA AUTO-AJUSTABLE
 .scroll-container {
     flex: 1; /* Esto hace que la tabla se estire hasta el borde de la sección mensajes */
     display: flex;
+    overflow: hidden;
 }
 
 
@@ -330,16 +310,19 @@ TABLA AUTO-AJUSTABLE
 .tabla-guardias th.tramo,
 .tabla-guardias td.tramo {
     width: 8%; /* Tramo de hora más estrecho */
+    align-items: center;
 }
 
 .tabla-guardias th.guardia,
 .tabla-guardias td.guardia {
     width: 12%; /* Profesores de guardia */
+    align-items: center;
 }
 
 .tabla-guardias th.ausencia,
 .tabla-guardias td.ausencia {
     width: 80%; /* Ausencias - Grupo / Aula */
+    align-items: center;
 }
 
 .tabla-guardias th.observaciones,
@@ -407,8 +390,53 @@ TABLA AUTO-AJUSTABLE
 
 .slide-text p {
     margin: 0;
-    font-size: clamp(12px, 2vh, 24px); /* ajusta automáticamente */
+   /* font-size: clamp(12px, 2vh, 24px);  ajusta automáticamente */
 }
+
+
+/* ----------------------------
+ESTILOS PARA EL PANEL DE MENSAJES Y ACTIVIDADES
+*/
+.panel {
+   /* display: flex !important; 
+    flex-direction: row !important;
+    width: 100%;
+    height: 100vh;
+    */
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+
+
+.mensajes {
+    
+    flex: 1 1 0%;    /* 50% / 50% real */
+    min-width: 0;   /* IMPORTANTE para evitar desbordes */
+
+    color: white;
+}
+
+.actividades {
+    
+    flex: 1 1 0%;    /* 50% / 50% real */
+    min-width: 0;   /* IMPORTANTE para evitar desbordes */
+
+    background: #f4f4f4;
+    overflow-y: auto;
+}
+
+.dia {
+    font-weight: bold;
+}
+
+.evento {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+}
+
 
 
 /* ----------------------------

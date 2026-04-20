@@ -1,26 +1,72 @@
 <?php
-require_once __DIR__ . '/admin/includes/db.php';
+require_once __DIR__ . '/includes/db.php';
 $hoy = date('Y-m-d');
 
 // Mensajes activos
 $stmt = $pdo->prepare("SELECT * FROM mensajes WHERE fecha_inicio <= ? AND fecha_fin >= ? ORDER BY fecha_inicio ASC");
 $stmt->execute([$hoy, $hoy]);
 $mensajes = $stmt->fetchAll(PDO::FETCH_ASSOC);
-?>
 
-<div id="mensajes-contenido">        
+
+// Eventos calendario esta semana
+$inicio = (new DateTime('monday this week'))->setTime(0,0);
+$fin = (new DateTime('sunday this week'))->setTime(23,59,59);
+
+$stmt = $pdo->prepare("
+SELECT date(inicio) as inicio, descripcion FROM eventos_calendario
+WHERE inicio BETWEEN ? AND ?
+ORDER BY inicio
+");
+
+$stmt->execute([
+    $inicio->format('Y-m-d'),
+    $fin->format('Y-m-d')
+]);
+
+$eventosSemana = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$agrupados = [];
+foreach ($eventosSemana as $ev) {
+    $fecha = $ev['inicio'];
+    $agrupados[$fecha][] = $ev;
+}
+
+
+
+?>
+<div class="panel">
+<div id="mensajes-contenido">    
         <?php foreach($mensajes as $m): ?>
-            <div class="slide">
-                <div class="slide-content">
+            <span class="slide">
+                <span class="slide-content">
                     <?php if($m['imagen']): ?>
                         <img src="uploads/mensajes/<?= $m['imagen'] ?>" alt="">
                     <?php endif; ?>
-                    <div class="slide-text">
+                    <span class="slide-text">
                         <p><?= htmlspecialchars($m['texto']) ?></p>                        
-                    </div>
-                </div>
-            </div>
+                    </span>
+                    </span>
+                    </span>
         <?php endforeach; ?>    
+</div>    
+
+
+
+    <div class="col actividades">
+        <h3>Actividades esta semana</h3>
+        <?php foreach ($agrupados as $fecha => $eventos): ?>
+            <span class="dia">
+                <?= $fecha.":" ?>
+            </span>
+            <span class="actividad">
+                <?php foreach ($eventos as $ev): ?>                    
+                        <?= htmlspecialchars($ev['descripcion']) ?>                    
+                <?php endforeach; ?>
+            </span>
+            <br>        
+        <?php endforeach; ?>
+
+    </div>
+
 </div>
 
 <script>
@@ -45,16 +91,6 @@ if(total > 0){
     }, 3000);
 }
 
-// --- LÓGICA DEL RELOJ ---
-/*
-function actualizarReloj() {
-    const ahora = new Date();
-    const h = String(ahora.getHours()).padStart(2, '0');
-    const m = String(ahora.getMinutes()).padStart(2, '0');
-    const s = String(ahora.getSeconds()).padStart(2, '0');
-    document.getElementById('reloj-digital').textContent = `${h}:${m}:${s}`;
-}
-setInterval(actualizarReloj, 1000);
-actualizarReloj();
-*/
+
+
 </script>

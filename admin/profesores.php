@@ -1,6 +1,6 @@
 <?php
-require_once 'includes/db.php';
-require_once 'includes/funciones.php';
+require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/funciones.php';
 
 $mensaje = '';
 
