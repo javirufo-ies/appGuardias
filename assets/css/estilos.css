@@ -254,6 +254,11 @@ LAYOUT 80/20 REFORZADO
     height: 100%;
 }
 
+.mensajes,
+.actividades {
+    padding: 0px;
+    overflow: hidden;
+}
 /* ----------------------------
 ESTILOS PARA IMPRESIÓN DEL INFORME DE FALTAS
 */
