@@ -206,6 +206,23 @@ html, body {
     background: rgb(246, 0, 229);
 }
 
+.pantalla,
+.cuadrante,
+.panel-mensajes {
+    min-height: 0;
+    min-width: 0;
+}
+.pantalla {
+    background: red;
+}
+
+.cuadrante {
+    background: yellow;
+}
+
+.panel-mensajes {
+    background: blue;
+}
 .pantalla > * {
     min-height: 0;
     min-width: 0;
