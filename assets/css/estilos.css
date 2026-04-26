@@ -202,34 +202,34 @@ html, body {
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', Arial, sans-serif;
-    font-size: clamp(12px, 1vw, 40px);
+    font-size: clamp(12px, 40px, 80px);
 }
 
 
 
-.wrapper {
-    min-height: 100vh;              /* ocupa toda la pantalla */
-    display: flex;
-    flex-direction: column;    /* apila verticalmente */
+.pantalla {
+    min-height: 100vh;           
+    display: grid;
+    grid-template-rows: 8fr 2fr; 
     overflow: hidden;          /* evita que una parte se salga */
+    background: rgb(246, 0, 229);
 }
 
 /* ----------------------------
 LAYOUT 80/20 REFORZADO
 ---------------------------- */
-#principal {    
-    
-    flex: 8;
-    flex-basis: 0;
+.cuadrante {    
+    display: grid;
+    grid-template-rows: 1fr 9fr; 
     overflow: hidden;
     background: white;
     min-height: 0;
     font-size: 1rem;
 }
 
-#mensajes {    
-    flex: 2;
-    flex-basis: 0;
+.panel-mensajes {    
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
     overflow: hidden;
     min-height: 0;    
     border-top: 1px solid #007bff; /* Línea separadora azul */

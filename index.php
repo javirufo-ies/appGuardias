@@ -12,12 +12,12 @@
 
 </head>
 <body>
-    <div class="wrapper">
-    <div id="principal">
+    <div class="pantalla">
+    <div id="cuadrante" class="cuadrante">
         <?php include __DIR__ . '/cuadrante.php'; ?>        
     </div>
 
-    <div id="mensajes">        
+    <div id="panel-mensajes" class="panel-mensajes">        
         <?php include __DIR__ . '/mensajes.php'; ?>
     </div>
     </div>
