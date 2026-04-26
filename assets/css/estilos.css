@@ -286,7 +286,7 @@ html, body {
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 10px;
+    /* padding: 10px; */
 }
 
 .texto-mensaje p {
@@ -313,16 +313,8 @@ html, body {
         transform: translateY(0);
     }
 
-    70% {
-        transform: translateY(-100%);
-    }
-
-    85% {
-        transform: translateY(-100%); /* pausa abajo */
-    }
-
     100% {
-        transform: translateY(0); /* vuelve arriba */
+        transform: translateY(-50%); /* vuelve arriba */
     }
 }
 

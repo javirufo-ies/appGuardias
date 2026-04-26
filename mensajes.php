@@ -61,6 +61,19 @@ foreach ($eventosSemana as $ev) {
             </span>
             <br>
         <?php endforeach; ?>
+
+<!-- Contenido duplicado para hacer scroll -->
+         <?php foreach ($agrupados as $fecha => $eventos): ?>
+            <span class="texto-fecha">
+                <?= $fecha . ":" ?>
+            </span>
+            <span class="texto-mensaje">
+                <?php foreach ($eventos as $ev): ?>
+                    <?= htmlspecialchars($ev['descripcion']) ?>
+                <?php endforeach; ?>
+            </span>
+            <br>
+        <?php endforeach; ?>
     </div>
 </div>
 
