@@ -256,10 +256,16 @@ html, body {
     height: 100%;
 }
 
-.mensajes,
+.mensajes {
+    padding: 0px;
+    overflow: hidden;
+    background-color: beige;
+}
+
 .actividades {
     padding: 0px;
     overflow: hidden;
+    background-color: lightpink;
 }
 
 .actividad,
