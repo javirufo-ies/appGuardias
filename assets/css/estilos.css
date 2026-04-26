@@ -17,7 +17,7 @@ LOGIN
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden   ;
+    overflow: hidden;
     background: linear-gradient(135deg, #0f172a, #1e293b);
     transition: 0.3s;
 }
@@ -36,7 +36,7 @@ body.dark {
     background: white;
     padding: 30px;
     border-radius: 16px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
     text-align: center;
     transition: 0.3s;
 }
@@ -82,7 +82,7 @@ body.dark .login-container {
 
 .input-group:focus-within {
     border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37,99,235,0.2);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
 }
 
 .input-group .icon {
@@ -137,6 +137,7 @@ button:hover {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -151,11 +152,25 @@ button:hover {
 }
 
 @keyframes shake {
-    0% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    50% { transform: translateX(5px); }
-    75% { transform: translateX(-5px); }
-    100% { transform: translateX(0); }
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    50% {
+        transform: translateX(5px);
+    }
+
+    75% {
+        transform: translateX(-5px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
 }
 
 /* =========================
@@ -184,15 +199,17 @@ button:hover {
 /*------------------------
 FRONTEND
 ------------------------*/
-html, body {
+html,
+body {
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', Arial, sans-serif;
-    
+
 }
 
 
-html, body {
+html,
+body {
     height: 100%;
     margin: 0;
 }
@@ -212,6 +229,7 @@ html, body {
     min-height: 0;
     min-width: 0;
 }
+
 .pantalla {
     background: red;
 }
@@ -223,15 +241,16 @@ html, body {
 .panel-mensajes {
     background: blue;
 }
-.pantalla > * {
+
+.pantalla>* {
     min-height: 0;
     min-width: 0;
     overflow: hidden;
 }
 
-.cuadrante {    
+.cuadrante {
     display: grid;
-    grid-template-rows: 1fr 9fr; 
+    grid-template-rows: 1fr 9fr;
     overflow: hidden;
     background: white;
     min-height: 0;
@@ -245,11 +264,11 @@ html, body {
     min-height: 0;
 }
 
-.panel-inferior > div {
+.panel-inferior>div {
     outline: 3px solid black;
 }
 
-.panel-inferior > * {
+.panel-inferior>* {
     min-width: 0;
     min-height: 0;
     width: 100%;
@@ -259,18 +278,28 @@ html, body {
 .mensajes {
     height: 100%;
     background-color: lightgreen;
+    position: relative;
+    overflow: hidden;
 }
+
+
 
 .mensaje {
     display: grid;
     grid-template-columns: 30% 70%;
     height: 100%;
     min-height: 0;
+    position: absolute;
+    inset: 0;        
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease;    
 
 }
 
 .mensaje.activo {
     opacity: 1;
+    pointer-events: auto;
     z-index: 2;
 }
 
@@ -324,27 +353,48 @@ html, body {
     }
 
     100% {
-        transform: translateY(-50%); /* vuelve arriba */
+        transform: translateY(-50%);
+        /* vuelve arriba */
     }
 }
 
 
-.actividad{
+.actividad {
     display: block;
     white-space: normal;
     word-break: break-word;
     overflow-wrap: anywhere;
 }
 
-.texto-fecha{
+.texto-fecha {
     font-weight: bold;
 }
+
 /* ----------------------------
 ESTILOS PARA IMPRESIÓN DEL INFORME DE FALTAS
 */
 @media print {
-    body * { visibility: hidden; }       /* ocultar todo */
-    #informe, #informe * { visibility: visible; } /* solo mostrar el informe */
-    #informe { position: absolute; top: 0; left: 0; width: 100%; }
-    button { display: none; }            /* ocultar botones */
+    body * {
+        visibility: hidden;
+    }
+
+    /* ocultar todo */
+    #informe,
+    #informe * {
+        visibility: visible;
+    }
+
+    /* solo mostrar el informe */
+    #informe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+    }
+
+    button {
+        display: none;
+    }
+
+    /* ocultar botones */
 }
