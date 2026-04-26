@@ -273,6 +273,39 @@ html, body {
     overflow: visible;
     padding: 0;
     background-color: lightpink;
+    animation: animaActividades 5s linear infinite;
+
+}
+
+
+@keyframes animaActividades {
+    0% {
+        transform: translateY(0);
+    }
+
+    10% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-33%);
+    }
+
+    50% {
+        transform: translateY(-33%);
+    }
+
+    80% {
+        transform: translateY(-66%);
+    }
+
+    90% {
+        transform: translateY(-66%);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
 }
 
 .actividad,
