@@ -9,8 +9,8 @@ $mensajes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
 // Eventos calendario esta semana
-$inicio = (new DateTime('monday this week'))->setTime(0,0);
-$fin = (new DateTime('sunday this week'))->setTime(23,59,59);
+$inicio = (new DateTime('monday this week'))->setTime(0, 0);
+$fin = (new DateTime('sunday this week'))->setTime(23, 59, 59);
 
 $stmt = $pdo->prepare("
 SELECT date(inicio) as inicio, descripcion FROM eventos_calendario
@@ -33,36 +33,33 @@ foreach ($eventosSemana as $ev) {
 
 
 ?>
-<div class="panel">
-<div id="mensajes-contenido">    
-        <?php foreach($mensajes as $m): ?>
+<div class="panel-inferior">
+    <div id="mensajes-">
+        <?php foreach ($mensajes as $m): ?>
             <span class="slide">
                 <span class="slide-content">
-                    <?php if($m['imagen']): ?>
+                    <?php if ($m['imagen']): ?>
                         <img src="uploads/mensajes/<?= $m['imagen'] ?>" alt="">
                     <?php endif; ?>
                     <span class="slide-text">
-                        <p><?= htmlspecialchars($m['texto']) ?></p>                        
+                        <p><?= htmlspecialchars($m['texto']) ?></p>
                     </span>
-                    </span>
-                    </span>
-        <?php endforeach; ?>    
-</div>    
-
-
-
-    <div class="col actividades">
+                </span>
+            </span>
+        <?php endforeach; ?>
+    </div>
+    <div class="actividades">
         <h3>Actividades esta semana</h3>
         <?php foreach ($agrupados as $fecha => $eventos): ?>
             <span class="dia">
-                <?= $fecha.":" ?>
+                <?= $fecha . ":" ?>
             </span>
             <span class="actividad">
-                <?php foreach ($eventos as $ev): ?>                    
-                        <?= htmlspecialchars($ev['descripcion']) ?>                    
+                <?php foreach ($eventos as $ev): ?>
+                    <?= htmlspecialchars($ev['descripcion']) ?>
                 <?php endforeach; ?>
             </span>
-            <br>        
+            <br>
         <?php endforeach; ?>
 
     </div>
@@ -70,27 +67,24 @@ foreach ($eventosSemana as $ev) {
 </div>
 
 <script>
-// --- LÓGICA DEL CARRUSEL ---
-let index = 0;
-const slides = document.querySelectorAll('.slide');
-const total = slides.length;
-const contador = document.getElementById('contador');
+    // --- LÓGICA DEL CARRUSEL ---
+    let index = 0;
+    const slides = document.querySelectorAll('.slide');
+    const total = slides.length;
+    const contador = document.getElementById('contador');
 
-function mostrarSlide(i) {
-    if(total === 0) return;
-    slides.forEach(slide => slide.style.display = 'none');
-    slides[i].style.display = 'flex';
-    //if(contador) contador.textContent = (i + 1) + " / " + total;
-}
+    function mostrarSlide(i) {
+        if (total === 0) return;
+        slides.forEach(slide => slide.style.display = 'none');
+        slides[i].style.display = 'flex';
+        //if(contador) contador.textContent = (i + 1) + " / " + total;
+    }
 
-if(total > 0){
-    mostrarSlide(index);
-    setInterval(() => {
-        index = (index + 1) % total;
+    if (total > 0) {
         mostrarSlide(index);
-    }, 3000);
-}
-
-
-
+        setInterval(() => {
+            index = (index + 1) % total;
+            mostrarSlide(index);
+        }, 3000);
+    }
 </script>
