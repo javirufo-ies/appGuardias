@@ -39,15 +39,16 @@ foreach ($eventosSemana as $ev) {
             <div class="mensaje">
                 <div class="imagen">
                     <?php if ($m['imagen']): ?>
-                        <img src="uploads/mensajes/<?= $m['imagen'] ?>" alt="">
+                        <img src="uploads/mensajes/<?= $m['imagen'] ?>">
                     <?php endif; ?>
                 </div>
-                <div class="texto-mensaje">
+                <div class="texto">
                     <p><?= htmlspecialchars($m['texto']) ?></p>
                 </div>
             </div>
         <?php endforeach; ?>
     </div>
+
     <div id="actividades" class="actividades">
         <h3>Actividades esta semana</h3>
         <?php foreach ($agrupados as $fecha => $eventos): ?>
@@ -93,7 +94,7 @@ foreach ($eventosSemana as $ev) {
     }
 
     // inicial
-    mostrarMensaje(index);
+    mostrarMensaje(0);
 
     // cambio cada 6 segundos (ajustable)
     setInterval(siguiente, 3000);
