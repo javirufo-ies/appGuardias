@@ -257,20 +257,28 @@ html, body {
 }
 
 .mensajes {
-    padding: 0px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
     overflow: hidden;
-    background-color: beige;
+    padding: 0;
+    background-color: lightgreen;
 }
 
+
 .actividades {
-    padding: 0px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
     overflow: hidden;
+    padding: 0;
     background-color: lightpink;
 }
 
 .actividad,
 .texto {
     display: block;
+    white-space: normal;
     word-break: break-word;
     overflow-wrap: anywhere;
 }
