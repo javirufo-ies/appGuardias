@@ -100,8 +100,7 @@ function parseICSDate($value) {
 
     // formato fecha pura YYYYMMDD
     if (preg_match('/^\d{8}$/', $value)) {
-        return DateTime::createFromFormat('Ymd', $value)
-            ->format('Y-m-d');
+        return DateTime::createFromFormat('Ymd', $value)->format('Y-m-d');
     }
 
     // formato datetime YYYYMMDDTHHMMSSZ
