@@ -313,30 +313,19 @@ html, body {
         transform: translateY(0);
     }
 
-    10% {
-        transform: translateY(0);
+    70% {
+        transform: translateY(-100%);
     }
 
-    40% {
-        transform: translateY(-33%);
-    }
-
-    50% {
-        transform: translateY(-33%);
-    }
-
-    80% {
-        transform: translateY(-66%);
-    }
-
-    90% {
-        transform: translateY(-66%);
+    85% {
+        transform: translateY(-100%); /* pausa abajo */
     }
 
     100% {
-        transform: translateY(0);
+        transform: translateY(0); /* vuelve arriba */
     }
 }
+
 
 .actividad{
     display: block;
