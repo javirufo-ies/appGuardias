@@ -80,7 +80,7 @@ foreach ($eventosSemana as $ev) {
 <script>
     // --- LÓGICA DEL CARRUSEL ---
     let index = 0;
-    const slides = document.querySelectorAll('.slide');
+    const slides = document.querySelectorAll('.mensajes');
     const total = slides.length;
     const contador = document.getElementById('contador');
 

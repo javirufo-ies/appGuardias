@@ -270,7 +270,7 @@ html, body {
 }
 
 .imagen {
-    display: flex;
+    /*display: flex;*/
     align-items: center;
     justify-content: center;
     overflow: hidden;
