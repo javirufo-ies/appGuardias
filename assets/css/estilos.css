@@ -188,7 +188,7 @@ html, body {
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', Arial, sans-serif;
-    font-size: clamp(12px, 20px, 180px);
+    
 }
 
 
@@ -228,9 +228,7 @@ html, body {
     min-width: 0;
     overflow: hidden;
 }
-/* ----------------------------
-LAYOUT 80/20 REFORZADO
----------------------------- */
+
 .cuadrante {    
     display: grid;
     grid-template-rows: 1fr 9fr; 
@@ -247,6 +245,10 @@ LAYOUT 80/20 REFORZADO
     min-height: 0;
 }
 
+.panel-inferior > div {
+    outline: 3px solid black;
+}
+
 .panel-inferior > * {
     min-width: 0;
     min-height: 0;
@@ -258,6 +260,13 @@ LAYOUT 80/20 REFORZADO
 .actividades {
     padding: 0px;
     overflow: hidden;
+}
+
+.actividad,
+.texto {
+    display: block;
+    word-break: break-word;
+    overflow-wrap: anywhere;
 }
 /* ----------------------------
 ESTILOS PARA IMPRESIÓN DEL INFORME DE FALTAS

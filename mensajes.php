@@ -36,14 +36,12 @@ foreach ($eventosSemana as $ev) {
 <div class="panel-inferior">
     <div id="mensajes" class="mensajes">
         <?php foreach ($mensajes as $m): ?>
-            <span class="slide">
-                <span class="slide-content">
-                    <?php if ($m['imagen']): ?>
-                        <img src="uploads/mensajes/<?= $m['imagen'] ?>" alt="">
-                    <?php endif; ?>
-                    <span class="slide-text">
-                        <p><?= htmlspecialchars($m['texto']) ?></p>
-                    </span>
+            <span class="mensaje">
+                <?php if ($m['imagen']): ?>
+                    <img src="uploads/mensajes/<?= $m['imagen'] ?>" alt="">
+                <?php endif; ?>
+                <span class="texto">
+                    <p><?= htmlspecialchars($m['texto']) ?></p>
                 </span>
             </span>
         <?php endforeach; ?>
@@ -51,10 +49,10 @@ foreach ($eventosSemana as $ev) {
     <div id="actividades" class="actividades">
         <h3>Actividades esta semana</h3>
         <?php foreach ($agrupados as $fecha => $eventos): ?>
-            <span class="dia">
+            <span class="texto">
                 <?= $fecha . ":" ?>
             </span>
-            <span class="actividad">
+            <span class="texto">
                 <?php foreach ($eventos as $ev): ?>
                     <?= htmlspecialchars($ev['descripcion']) ?>
                 <?php endforeach; ?>
