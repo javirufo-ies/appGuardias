@@ -34,7 +34,7 @@ foreach ($eventosSemana as $ev) {
 
 ?>
 <div class="panel-inferior">
-    <div id="mensajes-">
+    <div id="mensajes" class="mensajes">
         <?php foreach ($mensajes as $m): ?>
             <span class="slide">
                 <span class="slide-content">
@@ -48,7 +48,7 @@ foreach ($eventosSemana as $ev) {
             </span>
         <?php endforeach; ?>
     </div>
-    <div class="actividades">
+    <div id="actividades" class="actividades">
         <h3>Actividades esta semana</h3>
         <?php foreach ($agrupados as $fecha => $eventos): ?>
             <span class="dia">
@@ -61,9 +61,7 @@ foreach ($eventosSemana as $ev) {
             </span>
             <br>
         <?php endforeach; ?>
-
     </div>
-
 </div>
 
 <script>
