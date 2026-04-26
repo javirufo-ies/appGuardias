@@ -257,12 +257,42 @@ html, body {
 }
 
 .mensajes {
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-    overflow: hidden;
-    padding: 0;
+    height: 100%;
     background-color: lightgreen;
+}
+
+.mensaje {
+    display: grid;
+    grid-template-columns: 30% 70%;
+    height: 100%;
+}
+
+/* imagen */
+.imagen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* texto centrado */
+.texto-mensaje {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 10px;
+}
+
+.texto-mensaje p {
+    margin: 0;
+    word-break: break-word;
+    overflow-wrap: anywhere;
 }
 
 
@@ -308,12 +338,15 @@ html, body {
     }
 }
 
-.actividad,
-.texto {
+.actividad{
     display: block;
     white-space: normal;
     word-break: break-word;
     overflow-wrap: anywhere;
+}
+
+.texto-fecha{
+    font-weight: bold;
 }
 /* ----------------------------
 ESTILOS PARA IMPRESIÓN DEL INFORME DE FALTAS
