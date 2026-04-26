@@ -273,7 +273,7 @@ html, body {
     overflow: visible;
     padding: 0;
     background-color: lightpink;
-    animation: animaActividades 5s linear infinite;
+    animation: animaActividades 20s linear infinite;
 
 }
 
