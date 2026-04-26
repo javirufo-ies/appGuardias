@@ -46,7 +46,7 @@ foreach ($eventosSemana as $ev) {
                     <p><?= htmlspecialchars($m['texto']) ?></p>
                 </div>
             </div>
-        <?php endforeach; ?>    
+        <?php endforeach; ?>
     </div>
     <div id="actividades" class="actividades">
         <h3>Actividades esta semana</h3>
@@ -62,8 +62,8 @@ foreach ($eventosSemana as $ev) {
             <br>
         <?php endforeach; ?>
 
-<!-- Contenido duplicado para hacer scroll -->
-         <?php foreach ($agrupados as $fecha => $eventos): ?>
+        <!-- Contenido duplicado para hacer scroll -->
+        <?php foreach ($agrupados as $fecha => $eventos): ?>
             <span class="texto-fecha">
                 <?= $fecha . ":" ?>
             </span>
@@ -79,23 +79,22 @@ foreach ($eventosSemana as $ev) {
 
 <script>
     // --- LÓGICA DEL CARRUSEL ---
+    const mensajes = document.querySelectorAll('.mensaje');
     let index = 0;
-    const slides = document.querySelectorAll('.mensajes');
-    const total = slides.length;
-    const contador = document.getElementById('contador');
 
-    function mostrarSlide(i) {
-        if (total === 0) return;
-        slides.forEach(slide => slide.style.display = 'none');
-        slides[i].style.display = 'flex';
-        //if(contador) contador.textContent = (i + 1) + " / " + total;
+    function mostrarMensaje(i) {
+        mensajes.forEach(m => m.classList.remove('activo'));
+        mensajes[i].classList.add('activo');
     }
 
-    if (total > 0) {
-        mostrarSlide(index);
-        setInterval(() => {
-            index = (index + 1) % total;
-            mostrarSlide(index);
-        }, 3000);
+    function siguiente() {
+        index = (index + 1) % mensajes.length;
+        mostrarMensaje(index);
     }
+
+    // inicial
+    mostrarMensaje(index);
+
+    // cambio cada 6 segundos (ajustable)
+    setInterval(siguiente, 3000);
 </script>
