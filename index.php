@@ -92,8 +92,9 @@
     }
 
 */
+
+/*
         window.onload = function() {            
-//            esperarTablaYajustar();            
             setTimeout(() => {
                 location.reload();  // recarga toda la página
             }, 30000); // Refrescar cada 30 segundos            
@@ -101,7 +102,7 @@
             const tabla = document.getElementById('tabla-cuadrante');
             ajustarTabla(tabla, contenedor);
         };
-
+*/
     </script>
 
 </head>
