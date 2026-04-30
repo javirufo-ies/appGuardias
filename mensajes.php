@@ -62,8 +62,8 @@ foreach ($eventosSemana as $ev) {
                                 <?php endif; ?>
                             </div>
 
-                            <div class="flex h-full items-center justify-center p-2 overflow-hidden">
-                                    <p class="text-[clamp(12px,1.2vw,24px)]  leading-tight text-center w-full">
+                            <div class="flex h-full  p-2 overflow-hidden">
+                                    <p class="text-[clamp(12px,1vw,16px)]">
                                     <?= htmlspecialchars($m['texto']) ?>
                                 </p>
                             </div>
