@@ -95,8 +95,7 @@ foreach ($dias_num as $num=>$nombre){
  * Se utiliza en el selector de la interfaz.
  * ============================================================
  */
-$profesores = $pdo->query("SELECT id,nombre FROM profesores ORDER BY nombre")
-    ->fetchAll(PDO::FETCH_ASSOC);
+$profesores = $pdo->query("SELECT id,nombre FROM profesores ORDER BY nombre")->fetchAll(PDO::FETCH_ASSOC);
 
 
 /**
@@ -110,8 +109,7 @@ $profesores = $pdo->query("SELECT id,nombre FROM profesores ORDER BY nombre")
  * etc.
  * ============================================================
  */
-$tipos_ausencia = $pdo->query("SELECT * FROM tipos_ausencia ORDER BY descripcion")
-    ->fetchAll(PDO::FETCH_ASSOC);
+$tipos_ausencia = $pdo->query("SELECT * FROM tipos_ausencia ORDER BY id")->fetchAll(PDO::FETCH_ASSOC);
 
 
 /**
@@ -218,7 +216,7 @@ if($profesor_id){
     foreach($stmt->fetchAll(PDO::FETCH_ASSOC) as $a){
 
         // Clave compuesta día + tramo
-        $key = $a['dia_semana'].'_'.$a['tramo_id'];
+        $key = $a['tramo_id']; //$a['dia_semana'].'_'.$a['tramo_id'];
 
         $ausencias_existentes[$key] = true;
         $observaciones_existentes[$key] = $a['observaciones'];
@@ -284,18 +282,13 @@ if ($_SERVER['REQUEST_METHOD']==='POST'){
      * Recorre todos los tramos del horario semanal
      */
     foreach($tramos_por_dia as $dia_num=>$tramos){
-
         foreach($tramos as $tramo_id=>$t){
-
             $key = "{$dia_num}_{$tramo_id}";
-
-            $aula_val = $aulas[$key]
-                ?? ($horarios[$tramo_id]['aula'] ?? '');
-
+            $aula_val = $aulas[$key] ?? ($horarios[$tramo_id]['aula'] ?? '');
             $obs_val = $observaciones[$key] ?? '';
             $tipo_val = $tipos[$key] ?? null;
 
-            $existe = isset($ausencias_existentes[$key]);
+            $existe = isset($ausencias_existentes[$tramo_id]);
             $marcado = isset($seleccion[$key]);
 
 
@@ -315,10 +308,9 @@ if ($_SERVER['REQUEST_METHOD']==='POST'){
             // ACTUALIZACIÓN
             } elseif($marcado && $existe){
 
-                $current_aula = $aulas_existentes[$key] ?? '';
-                $current_obs = $observaciones_existentes[$key] ?? '';
-                $current_tipo = $tipos_existentes[$key] ?? '';
-
+                $current_aula = $aulas_existentes[$tramo_id] ?? '';
+                $current_obs = $observaciones_existentes[$tramo_id] ?? '';
+                $current_tipo = $tipos_existentes[$tramo_id] ?? '';
                 if(
                     $current_aula !== $aula_val
                     || $current_obs !== $obs_val
@@ -537,17 +529,12 @@ function aplicarTipoDia(dia, select){
 <table>
 
 <tr>
-
+<!-- Encabezados de días con opciones de día completo y tipo de ausencia -->
 <th>Hora / Tramo</th>
-
 <?php foreach($dias_num as $num=>$nombre): ?>
-
 <th>
-
     <?= $nombre ?>
-
     <br>
-
     <label>
         <input
             type="checkbox"
@@ -555,42 +542,27 @@ function aplicarTipoDia(dia, select){
         >
         Día completo
     </label>
-
     <br><br>
-
     <label>Tipo:</label>
-
     <select
         class="select-dia"
         onchange="aplicarTipoDia(<?= $num ?>, this)"
-    >
-
-        <option value="">-- Tipo --</option>
-
+    >        
         <?php foreach($tipos_ausencia as $tipo): ?>
-
         <option value="<?= $tipo['id'] ?>">
             <?= htmlspecialchars($tipo['descripcion']) ?>
         </option>
-
         <?php endforeach; ?>
-
     </select>
-
 </th>
-
 <?php endforeach; ?>
-
 </tr>
 
 <?php
-
+// Usamos lunes como referencia para filas
 $tramos_lunes = array_values($tramos_por_dia[1]);
-
 foreach($tramos_lunes as $i=>$t_lunes):
-
     echo "<tr>";
-
     echo "<td>".
         htmlspecialchars(
             $t_lunes['hora_inicio']
@@ -600,39 +572,26 @@ foreach($tramos_lunes as $i=>$t_lunes):
             .$t_lunes['descripcion']
         ).
         "</td>";
-
     foreach($dias_num as $dia_num=>$dia_nombre):
-
         $tramos_dia = array_values($tramos_por_dia[$dia_num]);
-
         $t = $tramos_dia[$i] ?? null;
-
         $tramo_id = $t['id'] ?? 0;
-
         $h = $horarios[$tramo_id] ?? null;
         $g = $guardias[$tramo_id] ?? null;
-
         $key = "{$dia_num}_{$tramo_id}";
-
         $checked='';
-
         $clase_td = 'celda';
-
-        if(($h || $g) && isset($ausencias_existentes[$key])){
+        //if(($h || $g) && isset($ausencias_existentes[$key])){
+        if(($h || $g) && isset($ausencias_existentes[$tramo_id])){
             $checked='checked';
             $clase_td .= ' ausente';
         }
-
         echo "<td class='{$clase_td}'";
-
         echo ($h || $g)
             ? " onclick='toggleAusencia(this)'"
             : "";
-
         echo ">";
-
         if($h){
-
             echo "<div class='clase'>"
                 .htmlspecialchars(
                     $h['asignatura']
@@ -643,13 +602,10 @@ foreach($tramos_lunes as $i=>$t_lunes):
                 )
                 ."</div>";
         }
-
         if($g){
             echo "<div class='guardia'>Guardia</div>";
         }
-
         if($h || $g){
-
             echo "
             <input
                 type='checkbox'
@@ -658,11 +614,19 @@ foreach($tramos_lunes as $i=>$t_lunes):
                 data-dia='{$dia_num}'
                 {$checked}
             >";
-
+            error_log("Tramo ID: {$tramo_id}, Día: {$dia_num}, Clave: {$key}, Marcado: {$checked}");
+            error_log("
+            <input
+                type='checkbox'
+                name='ausencia[]'
+                value='{$key}'
+                data-dia='{$dia_num}'
+                {$checked}
+            >");
             // --- Aula
-            $aula_val = $aulas_existentes[$key]
+            //$aula_val = $aulas_existentes[$key]
+            $aula_val = $aulas_existentes[$tramo_id]
                 ?? ($h['aula'] ?? '');
-
             echo "
             <input
                 type='text'
@@ -671,34 +635,27 @@ foreach($tramos_lunes as $i=>$t_lunes):
                 name='aula[{$key}]'
                 value='".htmlspecialchars($aula_val)."'
             >";
-
             // --- Observaciones
-            $obs_val = $observaciones_existentes[$key] ?? '';
-
+            //$obs_val = $observaciones_existentes[$key] ?? '';
+            $obs_val = $observaciones_existentes[$tramo_id] ?? '';
             echo "
             <textarea
                 placeholder='Observaciones'
                 class='observacion'
                 name='observacion[{$key}]'
             >".htmlspecialchars($obs_val)."</textarea>";
-
             // --- Tipo
-            $tipo_actual = $tipos_existentes[$key] ?? '';
-
+            //$tipo_actual = $tipos_existentes[$key] ?? '';
+            $tipo_actual = $tipos_existentes[$tramo_id] ?? '';
             echo "
             <select
                 class='tipo-tramo tipo-dia-{$dia_num}'
                 name='tipo[{$key}]'
-            >";
-
-            echo "<option value=''>-- Tipo --</option>";
-
+            >";            
             foreach($tipos_ausencia as $tipo){
-
                 $selected = ($tipo_actual == $tipo['id'])
                     ? 'selected'
                     : '';
-
                 echo "
                 <option
                     value='{$tipo['id']}'
@@ -707,20 +664,13 @@ foreach($tramos_lunes as $i=>$t_lunes):
                     ".htmlspecialchars($tipo['descripcion'])."
                 </option>";
             }
-
             echo "</select>";
         }
-
         echo "</td>";
-
     endforeach;
-
     echo "</tr>";
-
 endforeach;
-
 ?>
-
 </table>
 
 <br>

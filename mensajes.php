@@ -29,73 +29,87 @@ foreach ($eventosSemana as $ev) {
     $fecha = $ev['inicio'];
     $agrupados[$fecha][] = $ev;
 }
-
-
-
 ?>
-<div class="panel-inferior">
-    <div id="mensajes" class="mensajes">
+<style>
+.swiper,
+.swiper-wrapper,
+.swiper-slide {
+    height: 100%;
+}
+</style>
+<div class="swiper mensajes-swiper h-full w-full">
+
+    <div class="swiper-wrapper " >
+
         <?php foreach ($mensajes as $m): ?>
-            <div class="mensaje">
-                <div class="imagen">
-                    <?php if ($m['imagen']): ?>
-                        <img src="uploads/mensajes/<?= $m['imagen'] ?>">
-                    <?php endif; ?>
+            <div class="swiper-slide ">
+
+                <div class="grid grid-cols-[25%_1fr] h-full border-r-2 border-[#CE1BF4]">
+
+                    <div class="flex items-center justify-center p-2">
+                        <?php if ($m['imagen']): ?>
+                            <img src="uploads/mensajes/<?= $m['imagen'] ?>"
+                                 class="max-w-full max-h-full object-contain">
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="flex items-center p-2">
+                        <p class="text-[clamp(12px,1.2vw,24px)]">
+                            <?= htmlspecialchars($m['texto']) ?>
+                        </p>
+                    </div>
+
                 </div>
-                <div class="texto">
-                    <p><?= htmlspecialchars($m['texto']) ?></p>
-                </div>
+
             </div>
         <?php endforeach; ?>
+
     </div>
 
-    <div id="actividades" class="actividades">
-        <h3>Actividades esta semana</h3>
-        <?php foreach ($agrupados as $fecha => $eventos): ?>
-            <span class="texto-fecha">
-                <?= $fecha . ":" ?>
-            </span>
-            <span class="texto-mensaje">
-                <?php foreach ($eventos as $ev): ?>
-                    <?= htmlspecialchars($ev['descripcion']) ?>
-                <?php endforeach; ?>
-            </span>
-            <br>
-        <?php endforeach; ?>
-
-        <!-- Contenido duplicado para hacer scroll -->
-        <?php foreach ($agrupados as $fecha => $eventos): ?>
-            <span class="texto-fecha">
-                <?= $fecha . ":" ?>
-            </span>
-            <span class="texto-mensaje">
-                <?php foreach ($eventos as $ev): ?>
-                    <?= htmlspecialchars($ev['descripcion']) ?>
-                <?php endforeach; ?>
-            </span>
-            <br>
-        <?php endforeach; ?>
-    </div>
 </div>
+<div class="swiper actividades-swiper h-full w-full">
 
+    <div class="swiper-wrapper">
+
+        <?php foreach ($agrupados as $fecha => $eventos): ?>
+            <div class="swiper-slide p-4">
+
+                <h3 class="text-[clamp(14px,1.5vw,28px)] font-bold mb-2">
+                    <?= $fecha ?>
+                </h3>
+
+                <div class="text-[clamp(12px,1.1vw,22px)]">
+
+                    <?php foreach ($eventos as $ev): ?>
+                        <?= htmlspecialchars($ev['descripcion']) ?><br>
+                    <?php endforeach; ?>
+
+                </div>
+
+            </div>
+        <?php endforeach; ?>
+
+    </div>
+
+</div>
 <script>
-    // --- LÓGICA DEL CARRUSEL ---
-    const mensajes = document.querySelectorAll('.mensaje');
-    let index = 0;
+const mensajesSwiper = new Swiper('.mensajes-swiper', {
+    loop: true,
+    autoplay: {
+        delay: 3000,
+        disableOnInteraction: false
+    },
+    effect: 'fade',
+    fadeEffect: { crossFade: true }
+});
 
-    function mostrarMensaje(i) {
-        mensajes.forEach(m => m.classList.remove('activo'));
-        mensajes[i].classList.add('activo');
-    }
-
-    function siguiente() {
-        index = (index + 1) % mensajes.length;
-        mostrarMensaje(index);
-    }
-
-    // inicial
-    mostrarMensaje(0);
-
-    // cambio cada 6 segundos (ajustable)
-    setInterval(siguiente, 3000);
+const actividadesSwiper = new Swiper('.actividades-swiper', {
+    loop: true,
+    autoplay: {
+        delay: 6000,
+        disableOnInteraction: false
+    },
+    effect: 'fade',
+    fadeEffect: { crossFade: true }
+});
 </script>

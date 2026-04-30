@@ -44,63 +44,30 @@ $fecha_hoy = date('Y-m-d');
 
 </script>
 
-<div id="titulocuadrante"
-     class="grid grid-cols-[auto_1fr_auto]
-            items-center
-            h-[clamp(40px,6vh,100px)]
-            px-[clamp(4px,1vw,16px)]
-            bg-white
-            text-[#CE1BF4]
-            overflow-hidden">
 
-    <!-- LOGOS -->
-    <div class="flex items-center
-                gap-[clamp(2px,0.5vw,10px)]
-                overflow-hidden">
-
-        <img src="/images/logo.png"
-             class="h-[clamp(22px,4vh,70px)]
-                    w-auto
-                    max-w-[20vw]
-                    object-contain">
-
-        <img src="/images/logoies.png"
-             class="h-[clamp(22px,4vh,70px)]
-                    w-auto
-                    max-w-[20vw]
-                    object-contain">
+<div id="titulocuadrante" class="grid grid-cols-3 items-center h-[clamp(24px,6vh,80px)] overflow-hidden w-full bg-blue-600 text-white ">
+    <div id="logos" class="justify-self-start flex items-center gap-2 h-full">
+        <img src="/images/logo.png" class="h-full max-h-[clamp(24px,6vh,80px)] w-auto object-contain">
+        <img src="/images/logoies.png" class="h-full max-h-[clamp(24px,6vh,80px)] w-auto object-contain">
     </div>
-
-    <!-- TITULO -->
     <div id="titulo-centro"
-         class="min-w-0
-                text-center
-                truncate
-                font-bold
-                text-[clamp(12px,2vw,30px)]">
-
+         class="justify-self-center text-center font-semibold text-[clamp(14px,2.2vw,22px)] leading-tight">
         Guardias: <?= ucfirst($dia_actual) ?> (<?= date('d/m/Y') ?>)
-
     </div>
-
-    <!-- RELOJ -->
     <div id="reloj"
-         class="justify-self-end
-                whitespace-nowrap
-                text-[clamp(10px,1.8vw,26px)]">
+         class="justify-self-end">
     </div>
-
 </div>
 
 
 <div class="h-full min-h-0 flex flex-col overflow-hidden">
     <div class="flex-1 min-h-0 overflow-auto">
-    <table id="tabla-cuadrante" class="tabla-guardias w-full text-[clamp(10px,1.1vw,160px)]">
+    <table id="tabla-cuadrante" class="tabla-guardias w-full text-[clamp(10px,1.1vw,18px)]">
     <thead>
         <tr class="bg-stone-100">
-            <th class="border border-gray-400 px-2 py-[clamp(2px,0.4vw,8px)]">Tramo</th>
-            <th class="border border-gray-400 px-2 py-[clamp(2px,0.4vw,8px)]">Profesores Guardia</th>
-            <th class="border border-gray-400 px-2 py-[clamp(2px,0.4vw,8px)]">Profesor ausente - Grupo / Aula - Observaciones</th>
+            <th class="tramo px-2 py-[clamp(2px,0.4vw,8px)]">Tramo</th>
+            <th class="guardia px-2 py-[clamp(2px,0.4vw,8px)]">Profesores Guardia</th>
+            <th class="ausencia px-2 py-[clamp(2px,0.4vw,8px)]">Profesor ausente - Grupo / Aula - Observaciones</th>
         </tr>
     </thead>
 
@@ -110,7 +77,7 @@ $fecha_hoy = date('Y-m-d');
 foreach ($tramos as $tramo) {
 echo "<!-- Procesando tramo: {$tramo['descripcion']} ({$tramo['hora_inicio']} - {$tramo['hora_fin']})  $hora_actual-->";
     $es_ahora = ($hora_actual >= $tramo['hora_inicio'] && $hora_actual <= $tramo['hora_fin'])
-        ? "class='bg-lime-300 outline outline-2 outline-amber-400 -outline-offset-2 font-bold'" : "";
+        ? "class='fila-actual'" : "";
 
     // =========================
     // GUARDIAS
@@ -229,16 +196,21 @@ echo "<!-- Procesando tramo: {$tramo['descripcion']} ({$tramo['hora_inicio']} - 
     // OUTPUT
     // =========================
     echo "<tr {$es_ahora}>";
-    echo "<td class='border border-gray-400 px-2 py-[clamp(2px,0.4vw,8px)]'>{$tramo['hora_inicio']} - {$tramo['hora_fin']}</td>";
-    echo "<td class='border border-gray-400 px-2 py-[clamp(2px,0.4vw,8px)]'>{$lista_profesores_html}</td>";
-    echo "<td class='border border-gray-400 px-2 py-[clamp(2px,0.4vw,8px)]'>" . (empty($lista_ausentes) ? '&nbsp;&nbsp;' : implode('<hr>', $lista_ausentes)) . "</td>";
-    error_log("Tramo: {$tramo['descripcion']} - Guardias: " . implode(', ', array_column($profesores_guardia, 'nombre')) . " - Ausentes: " . implode(', ', array_column($ausentes, 'nombre')));
+
+    echo "<td class='tramo'>{$tramo['hora_inicio']} - {$tramo['hora_fin']}</td>";
+
+    echo "<td class='guardia'>{$lista_profesores_html}</td>";
+
+    echo "<td class='ausencia'>" . (empty($lista_ausentes) ? '' : implode('<hr>', $lista_ausentes)) . "</td>";
+
+//    echo "<td class='observaciones'>" . (empty($lista_obs) ? '' : implode('<hr>', $lista_obs)) . "</td>";
+
     echo "</tr>";
 }
 ?>
 
 </tbody>
 </table>
-
+</div>
 </div>
 </div>
