@@ -17,6 +17,10 @@
   href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
 />
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+
+
+
 <style>
     html, body {
     height: 100%;
@@ -34,6 +38,26 @@
             <?php include __DIR__ . '/mensajes.php'; ?>
         </div>
     </div>
+
+
+<script>
+async function recargarCuadrante() {
+    try {
+        const res = await fetch('cuadrante.php');
+        const html = await res.text();
+        document.getElementById('cuadrante').innerHTML = html;
+
+    } catch (e) {
+        console.error('Error recargando cuadrante', e);
+    }
+}
+
+// cada 1 minuto
+setInterval(recargarCuadrante, 60000);
+
+// carga inicial opcional
+recargarCuadrante();
+</script>
 </body>
 
 </html>

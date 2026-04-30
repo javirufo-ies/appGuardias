@@ -116,7 +116,7 @@ foreach ($eventosSemana as $ev) {
 const mensajesSwiper = new Swiper('.mensajes-swiper', {
     loop: true,
     autoplay: {
-        delay: 3000,
+        delay: 5000,
         disableOnInteraction: false
     },
     effect: 'fade',

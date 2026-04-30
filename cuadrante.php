@@ -59,16 +59,10 @@ $fecha_hoy = date('Y-m-d');
                 overflow-hidden">
 
         <img src="/images/logo.png"
-             class="h-[clamp(22px,4vh,70px)]
-                    w-auto
-                    max-w-[20vw]
-                    object-contain">
+             class="h-[clamp(22px,3vh,50px)] w-auto max-w-[180px] object-contain">
 
         <img src="/images/logoies.png"
-             class="h-[clamp(22px,4vh,70px)]
-                    w-auto
-                    max-w-[20vw]
-                    object-contain">
+             class="h-[clamp(22px,3vh,50px)] w-auto max-w-[180px] object-contain">
     </div>
 
     <!-- TITULO -->
