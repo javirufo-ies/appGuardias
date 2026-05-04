@@ -45,6 +45,7 @@
 
 
 <script>
+
 async function recargarCuadrante() {
     try {
         const res = await fetch('cuadrante.php');

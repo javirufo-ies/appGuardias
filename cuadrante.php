@@ -1,6 +1,11 @@
 <?php
 require_once __DIR__ . '/includes/db.php';
 
+/**
+ * =========================
+ * DÍAS Y CONTROL DE JORNADA
+ * =========================
+ */
 $dias = ['lunes','martes','miércoles','jueves','viernes','sábado','domingo'];
 $dia_actual = strtolower($dias[date('N') - 1]);
 
@@ -13,7 +18,26 @@ $hora_actual = date('H:i');
 $hora_corte = '14:25';
 $turno_texto = ($hora_actual < $hora_corte) ? 'diurno' : 'vespertino';
 
-// Tramos
+$fecha_hoy = date('Y-m-d');
+
+/**
+ * =========================
+ * TIPOS DE AUSENCIA (BD → UI)
+ * =========================
+ */
+$stmt = $pdo->query("SELECT * FROM tipos_ausencia");
+$tipos_ausencia = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$tipos = [];
+foreach ($tipos_ausencia as $t) {
+    $tipos[$t['id']] = $t;
+}
+
+/**
+ * =========================
+ * TRAMOS
+ * =========================
+ */
 $stmt = $pdo->prepare("
     SELECT * FROM tramos 
     WHERE LOWER(dia_semana) = ? AND LOWER(descripcion) LIKE ?
@@ -21,175 +45,204 @@ $stmt = $pdo->prepare("
 ");
 $stmt->execute([$dia_actual, "%$turno_texto%"]);
 $tramos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-$fecha_hoy = date('Y-m-d');
 ?>
-
-<script>
-
-    function actualizarReloj() {
-        
-        const ahora = new Date();
-        const horas = String(ahora.getHours()).padStart(2,'0');
-        const minutos = String(ahora.getMinutes()).padStart(2,'0');
-        const segundos = String(ahora.getSeconds()).padStart(2,'0');
-        reloj = document.getElementById('reloj');
-        if (reloj) {
-            reloj.innerHTML = `${horas}:${minutos}:${segundos}`;
-        }
-        
-    }
-    setInterval(actualizarReloj, 1000);
-    actualizarReloj();
-
-</script>
-
-
 
 
 <div class="h-full min-h-0 flex flex-col overflow-hidden">
-    <div class="flex-1 min-h-0 overflow-auto">
-    <table id="tabla-cuadrante" class="tabla-guardias w-full text-[clamp(10px,1.1vw,160px)]">
-    <thead>
-        <tr class="bg-stone-100">
-            <th class="border border-gray-400 px-2 py-[clamp(2px,0.4vw,8px)]">Tramo</th>
-            <th class="border border-gray-400 px-2 py-[clamp(2px,0.4vw,8px)]">Profesores Guardia</th>
-            <th class="border border-gray-400 px-2 py-[clamp(2px,0.4vw,8px)]">Profesor ausente - Grupo / Aula - Observaciones</th>
-        </tr>
-    </thead>
+<div class="flex-1 min-h-0 overflow-auto">
+
+<table id="tabla-cuadrante" class="tabla-guardias w-full text-[clamp(10px,1.1vw,160px)]">
+
+<thead>
+<tr class="bg-stone-100">
+    <th class="border border-gray-400 px-2 py-[clamp(2px,0.4vw,8px)]">Tramo</th>
+    <th class="border border-gray-400 px-2 py-[clamp(2px,0.4vw,8px)]">Profesores Guardia</th>
+    <th class="border border-gray-400 px-2 py-[clamp(2px,0.4vw,8px)]">Profesor ausente - Grupo / Aula - Observaciones</th>
+</tr>
+</thead>
 
 <tbody>
 
+<?php foreach ($tramos as $tramo): ?>
+
 <?php
-foreach ($tramos as $tramo) {
-echo "<!-- Procesando tramo: {$tramo['descripcion']} ({$tramo['hora_inicio']} - {$tramo['hora_fin']})  $hora_actual-->";
-    $es_ahora = ($hora_actual >= $tramo['hora_inicio'] && $hora_actual <= $tramo['hora_fin'])
-        ? "class='bg-lime-300 outline outline-2 outline-amber-400 -outline-offset-2 font-bold'" : "";
+echo "<!-- Tramo: {$tramo['descripcion']} -->";
 
-    // =========================
-    // GUARDIAS
-    // =========================
-    $stmt = $pdo->prepare("
-        SELECT p.id, p.nombre
-        FROM profesores p 
-        JOIN horarios h ON h.profesor_id = p.id
-        WHERE h.tramo_horario = ?
-          AND h.dia_semana = ?
-          AND h.tipo = 'Guardias'
-    ");
-    $stmt->execute([$tramo['id'], date('N')]);
-    $profesores_guardia = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    // =========================
-    // AUSENCIAS
-    // =========================
-    $stmt = $pdo->prepare("
-        SELECT a.profesor_id, p.nombre, h.grupo, a.aula, a.observaciones
-        FROM ausencias a
-        JOIN profesores p ON a.profesor_id = p.id
-        LEFT JOIN horarios h 
-            ON h.profesor_id = a.profesor_id 
-            AND h.tramo_horario = a.tramo_id 
-            AND h.tipo='Docencia'
-        WHERE a.tramo_id = ? AND a.fecha = ?
-    ");
-    $stmt->execute([$tramo['id'], $fecha_hoy]);
-    $ausentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$es_ahora = ($hora_actual >= $tramo['hora_inicio'] && $hora_actual <= $tramo['hora_fin'])
+    ? "class='bg-lime-300 outline outline-2 outline-amber-400 -outline-offset-2 font-bold'"
+    : "";
 
-    // =========================
-    // INDEXAR AUSENTES
-    // =========================
-    $ausentes_por_id = [];
-    foreach ($ausentes as $a) {
-        $ausentes_por_id[$a['profesor_id']] = $a;
-    }
+/**
+ * =========================
+ * GUARDIAS
+ * =========================
+ */
+$stmt = $pdo->prepare("
+    SELECT p.id, p.nombre
+    FROM profesores p 
+    JOIN horarios h ON h.profesor_id = p.id
+    WHERE h.tramo_horario = ?
+      AND h.dia_semana = ?
+      AND h.tipo = 'Guardias'
+");
+$stmt->execute([$tramo['id'], date('N')]);
+$profesores_guardia = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // =========================
-    // GUARDIAS CON (F)
-    // =========================
-    $lista_profesores = [];
+/**
+ * =========================
+ * AUSENCIAS
+ * =========================
+ */
+$stmt = $pdo->prepare("
+    SELECT a.*, p.nombre, h.grupo
+    FROM ausencias a
+    JOIN profesores p ON a.profesor_id = p.id
+    LEFT JOIN horarios h 
+        ON h.profesor_id = a.profesor_id 
+        AND h.tramo_horario = a.tramo_id 
+        AND h.tipo='Docencia'
+    WHERE a.tramo_id = ? AND a.fecha = ?
+");
+$stmt->execute([$tramo['id'], $fecha_hoy]);
+$ausentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    foreach ($profesores_guardia as $p) {
-        if (isset($ausentes_por_id[$p['id']])) {
-            $lista_profesores[] = "<span style='color:red;'>{$p['nombre']} (F)</span>";
-        } else {
-            $lista_profesores[] = $p['nombre'];
-        }
-    }
-
-    $lista_profesores_html = !empty($lista_profesores)
-        ? implode('<br>', $lista_profesores)
-        : '-';
-
-    // =========================
-    // AUSENCIAS (SIN GUARDIAS)
-    // =========================
-    $ids_guardia = array_flip(array_column($profesores_guardia, 'id'));
-
-    $ausentes_agrupados = [];
-
-    foreach ($ausentes as $a) {
-
-        if (isset($ids_guardia[$a['profesor_id']])) {
-            continue;
-        }
-
-        $id = $a['profesor_id'];
-
-        if (!isset($ausentes_agrupados[$id])) {
-            $ausentes_agrupados[$id] = [
-                'nombre' => $a['nombre'],
-                'grupos' => [],
-                'aula' => $a['aula'] ?? '',
-                'observaciones' => []
-            ];
-        }
-
-        if (!empty($a['grupo']) && !in_array($a['grupo'], $ausentes_agrupados[$id]['grupos'])) {
-            $ausentes_agrupados[$id]['grupos'][] = $a['grupo'];
-        }
-
-        if (!empty($a['observaciones']) && !in_array($a['observaciones'], $ausentes_agrupados[$id]['observaciones'])) {
-            $ausentes_agrupados[$id]['observaciones'][] = $a['observaciones'];
-        }
-    }
-
-    // =========================
-    // CONSTRUIR COLUMNAS ALINEADAS
-    // =========================
-    $lista_ausentes = [];
-    $lista_obs = [];
-
-    foreach ($ausentes_agrupados as $a) {        
-        $grupos = implode(', ', $a['grupos']);
-        $aula = $a['aula'];
-        $observaciones = $a['observaciones'];
-
-        $texto = "<b>{$a['nombre']}</b>";
-        if ($grupos) $texto .= " {$grupos}";
-        if ($aula)   $texto .= " / {$aula}";
-        if ($observaciones) $texto .= " - <span class='observaciones'> " . implode('; ', $observaciones) . "</span>";
-        $lista_ausentes[] = $texto;
-/*
-        // OBSERVACIONES (alineadas)
-        if (!empty($a['observaciones'])) {
-            $lista_obs[] = implode('<br>', $a['observaciones']);
-        } else {
-            $lista_obs[] = '';
-        }
-*/            
-    }
-
-    // =========================
-    // OUTPUT
-    // =========================
-    echo "<tr {$es_ahora}>";
-    echo "<td class='border border-gray-400 px-2 py-[clamp(2px,0.4vw,8px)]'>{$tramo['hora_inicio']} - {$tramo['hora_fin']}</td>";
-    echo "<td class='border border-gray-400 px-2 py-[clamp(2px,0.4vw,8px)]'>{$lista_profesores_html}</td>";
-    echo "<td class='border border-gray-400 px-2 py-[clamp(2px,0.4vw,8px)]'>" . (empty($lista_ausentes) ? '&nbsp;&nbsp;' : implode('<hr>', $lista_ausentes)) . "</td>";
-    error_log("Tramo: {$tramo['descripcion']} - Guardias: " . implode(', ', array_column($profesores_guardia, 'nombre')) . " - Ausentes: " . implode(', ', array_column($ausentes, 'nombre')));
-    echo "</tr>";
+/**
+ * INDEXAR AUSENCIAS
+ */
+$ausentes_por_id = [];
+foreach ($ausentes as $a) {
+    $ausentes_por_id[$a['profesor_id']] = $a;
 }
+
+/**
+ * =========================
+ * GUARDIAS CON FORMATO DINÁMICO
+ * =========================
+ */
+$lista_profesores = [];
+
+foreach ($profesores_guardia as $p) {
+
+    if (isset($ausentes_por_id[$p['id']])) {
+
+        $ausencia = $ausentes_por_id[$p['id']];
+        $tipo = $tipos[$ausencia['tipo']] ?? null;
+
+        $nombre = htmlspecialchars($p['nombre']);
+
+        if ($tipo) {
+            $clase = $tipo['clase_css'] ?? '';
+            $codigo = $tipo['codigo_mostrar'] ?? '';
+        } else {
+            $clase = 'text-red-600 font-bold';
+            $codigo = 'F';
+        }
+
+        $lista_profesores[] = "<span class='{$clase}'>{$nombre} ({$codigo})</span>";
+
+    } else {
+        $lista_profesores[] = htmlspecialchars($p['nombre']);
+    }
+}
+
+$lista_profesores_html = !empty($lista_profesores)
+    ? implode('<br>', $lista_profesores)
+    : '-';
+
+/**
+ * =========================
+ * AUSENCIAS AGRUPADAS
+ * =========================
+ */
+$ids_guardia = array_flip(array_column($profesores_guardia, 'id'));
+
+$ausentes_agrupados = [];
+
+foreach ($ausentes as $a) {
+
+    if (isset($ids_guardia[$a['profesor_id']])) {
+        continue;
+    }
+
+    $id = $a['profesor_id'];
+
+    if (!isset($ausentes_agrupados[$id])) {
+        $ausentes_agrupados[$id] = [
+            'nombre' => $a['nombre'],
+            'grupos' => [],
+            'aula' => $a['aula'] ?? '',
+            'observaciones' => [],
+            'tipo' => $a['tipo'] ?? null
+        ];
+    }
+
+    if (!empty($a['grupo']) && !in_array($a['grupo'], $ausentes_agrupados[$id]['grupos'])) {
+        $ausentes_agrupados[$id]['grupos'][] = $a['grupo'];
+    }
+
+    if (!empty($a['observaciones']) && !in_array($a['observaciones'], $ausentes_agrupados[$id]['observaciones'])) {
+        $ausentes_agrupados[$id]['observaciones'][] = $a['observaciones'];
+    }
+}
+
+/**
+ * =========================
+ * RENDER AUSENCIAS
+ * =========================
+ */
+$lista_ausentes = [];
+
+foreach ($ausentes_agrupados as $a) {
+
+    $tipo = $tipos[$a['tipo']] ?? null;
+
+    $clase = $tipo['clase_css'] ?? 'text-black';
+    $codigo = $tipo['codigo_mostrar'] ?? '';
+    $codigo = !empty($tipo['codigo_mostrar'])
+    ? '(' . $tipo['codigo_mostrar'] . ')'
+    : '';
+
+    $grupos = implode(', ', $a['grupos']);
+    $aula = $a['aula'];
+    $observaciones = $a['observaciones'];
+
+    $texto = "<span class='{$clase}'>";
+    $texto .= "<b>{$a['nombre']}</b> {$codigo}";
+
+    if ($grupos) $texto .= " {$grupos}";
+    if ($aula) $texto .= " / {$aula}";
+    if ($observaciones) {
+        $texto .= " - <span class='observaciones'>" . implode('; ', $observaciones) . "</span>";
+    }
+
+    $texto .= "</span>";
+
+    $lista_ausentes[] = $texto;
+}
+
+/**
+ * =========================
+ * OUTPUT FINAL
+ * =========================
+ */
+echo "<tr {$es_ahora}>";
+
+echo "<td class='border border-gray-400 px-2 py-[clamp(2px,0.4vw,8px)]'>
+{$tramo['hora_inicio']} - {$tramo['hora_fin']}
+</td>";
+
+echo "<td class='border border-gray-400 px-2 py-[clamp(2px,0.4vw,8px)]'>
+{$lista_profesores_html}
+</td>";
+
+echo "<td class='border border-gray-400 px-2 py-[clamp(2px,0.4vw,8px)]'>"
+. (empty($lista_ausentes) ? '&nbsp;' : implode('<hr>', $lista_ausentes))
+. "</td>";
+
+echo "</tr>";
 ?>
+
+<?php endforeach; ?>
 
 </tbody>
 </table>

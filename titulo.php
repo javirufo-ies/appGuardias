@@ -1,3 +1,31 @@
+<?php
+$dias = ['lunes','martes','miércoles','jueves','viernes','sábado','domingo'];
+$dia_actual = strtolower($dias[date('N') - 1]);
+
+if (!in_array($dia_actual, ['lunes','martes','miércoles','jueves','viernes'])) {
+    echo "<h2 style='text-align:center; padding:20px;'>No hay guardias programadas para hoy.</h2>";
+    return;
+}
+?>
+<script>
+
+    function actualizarReloj() {
+        
+        const ahora = new Date();
+        const horas = String(ahora.getHours()).padStart(2,'0');
+        const minutos = String(ahora.getMinutes()).padStart(2,'0');
+        const segundos = String(ahora.getSeconds()).padStart(2,'0');
+        reloj = document.getElementById('reloj');
+        if (reloj) {
+            reloj.innerHTML = `${horas}:${minutos}:${segundos}`;
+        }
+        
+    }
+    setInterval(actualizarReloj, 1000);
+    actualizarReloj();
+
+</script>
+
 <div id="titulocuadrante"
      class="grid grid-cols-[auto_1fr_auto]
             items-center
