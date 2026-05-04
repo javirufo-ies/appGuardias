@@ -30,7 +30,11 @@
 </head>
 
 <body class="h-full m-0 p-0 overflow-hidden ">
-    <div id="pantalla" class="grid h-screen grid-rows-[8fr_2fr] overflow-hidden">
+    <div id="pantalla" class="grid h-screen grid-rows-[1fr_7fr_fr_2fr] overflow-hidden">
+        <div id="titulo" class="grid grid-rows-[auto_1fr] h-full overflow-hidden">
+            <?php include __DIR__ . '/titulo.php'; ?>
+        </div>
+
         <div id="cuadrante" class="grid grid-rows-[auto_1fr] h-full overflow-hidden">
             <?php include __DIR__ . '/cuadrante.php'; ?>
         </div>
@@ -53,7 +57,7 @@ async function recargarCuadrante() {
 }
 
 // cada 1 minuto
-setInterval(recargarCuadrante, 60000);
+setInterval(recargarCuadrante, 30000);
 
 // carga inicial opcional
 recargarCuadrante();
