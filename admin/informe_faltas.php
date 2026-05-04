@@ -1,35 +1,83 @@
 <?php
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/funciones.php';
+
 $mes = $_GET['mes'] ?? date('n');
 $anio = $_GET['anio'] ?? date('Y');
 
-// --- días lectivos
+/**
+ * =========================
+ * DÍAS LECTIVOS
+ * =========================
+ */
 $dias_lectivos = 0;
+
 $inicio = new DateTime("$anio-$mes-01");
 $fin = clone $inicio;
 $fin->modify('last day of this month');
 
 $tmp = clone $inicio;
+
 while ($tmp <= $fin) {
-    if ($tmp->format('N') <= 5) $dias_lectivos++;
+    if ($tmp->format('N') <= 5) {
+        $dias_lectivos++;
+    }
     $tmp->modify('+1 day');
 }
 
-// --- consulta
+/**
+ * =========================
+ * TIPOS DE AUSENCIA
+ * =========================
+ */
+$stmtTipos = $pdo->query("
+    SELECT id, codigo_mostrar
+    FROM tipos_ausencia
+");
+$tipos_ausencia = $stmtTipos->fetchAll(PDO::FETCH_ASSOC);
+
+$tipos = [];
+foreach ($tipos_ausencia as $t) {
+    $tipos[(int)$t['id']] = $t;
+}
+
+/**
+ * =========================
+ * CONSULTA: POR PROFESOR + DÍA
+ * =========================
+ */
 $stmt = $pdo->prepare("
     SELECT 
         p.nombre,
-        COUNT(DISTINCT a.fecha) as total_dias,
-        GROUP_CONCAT(DISTINCT DATE_FORMAT(a.fecha,'%d/%m') ORDER BY a.fecha) as dias
+        a.fecha,
+        MIN(a.tipo) as tipo_ausencia_id
     FROM ausencias a
     JOIN profesores p ON p.id = a.profesor_id
     WHERE MONTH(a.fecha)=? AND YEAR(a.fecha)=?
-    GROUP BY p.id
-    ORDER BY total_dias DESC
+    GROUP BY p.id, a.fecha
+    ORDER BY p.nombre, a.fecha
 ");
-$stmt->execute([$mes,$anio]);
-$data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$stmt->execute([$mes, $anio]);
+$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+/**
+ * =========================
+ * AGRUPAR POR PROFESOR
+ * =========================
+ */
+$data = [];
+
+foreach ($rows as $r) {
+
+    $nombre = $r['nombre'];
+
+    if (!isset($data[$nombre])) {
+        $data[$nombre] = [];
+    }
+
+    $data[$nombre][] = $r;
+}
 ?>
 
 <!DOCTYPE html>
@@ -39,7 +87,7 @@ $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <style>
 body { font-family: Arial; margin:20px; }
 table { width:100%; border-collapse: collapse; margin-top:20px;}
-th,td { border:1px solid #ccc; padding:8px; }
+th,td { border:1px solid #ccc; padding:8px; vertical-align: top; }
 th { background:#333; color:white; }
 form { margin-bottom:20px; }
 </style>
@@ -49,7 +97,8 @@ form { margin-bottom:20px; }
 <h2>📊 Informe de ausencias</h2>
 
 <form method="get" action="dashboard.php">
-     <input type="hidden" name="seccion" value="informefaltas">
+    <input type="hidden" name="seccion" value="informefaltas">
+
     <label>Mes:</label>
     <select name="mes">
         <?php for($m=1;$m<=12;$m++): ?>
@@ -66,40 +115,64 @@ form { margin-bottom:20px; }
 </form>
 
 <p>Días lectivos: <b><?= $dias_lectivos ?></b></p>
+
 <div style="margin-bottom:15px;">
-    <button onclick="window.print()" style="padding:6px 12px; font-size:14px; cursor:pointer;">
+    <button onclick="window.print()" style="padding:6px 12px; cursor:pointer;">
         🖨️ Imprimir listado
     </button>
 </div>
+
 <table>
 <tr>
-<th>Profesor</th>
-<th>Total días</th>
-<th>%</th>
-<th>Fechas</th>
+    <th>Profesor</th>
+    <th>Fechas</th>
 </tr>
 
-<?php 
+<?php if (empty($data)): ?>
 
-if (empty($data)): ?>
 <tr>
-    <td colspan="4" style="text-align:center; padding:20px;">
+    <td colspan="2" style="text-align:center; padding:20px;">
         ⚠️ No hay ausencias registradas en este mes
     </td>
 </tr>
+
 <?php else: ?>
 
-<?php foreach($data as $d): 
-    $porcentaje = $dias_lectivos ? round(($d['total_dias']/$dias_lectivos)*100,1) : 0;
-?>
+<?php foreach ($data as $nombre => $items): ?>
+
 <tr>
-<td><?= htmlspecialchars($d['nombre']) ?></td>
-<td><?= $d['total_dias'] ?></td>
-<td><?= $porcentaje ?>%</td>
-<td><?= $d['dias'] ?></td>
+
+<td><?= htmlspecialchars($nombre) ?></td>
+
+<td>
+
+<?php
+$lineas = [];
+
+foreach ($items as $i) {
+
+    $tipo = $tipos[(int)($i['tipo_ausencia_id'] ?? 0)] ?? null;
+
+    $codigo = !empty($tipo['codigo_mostrar'])
+        ? '(' . $tipo['codigo_mostrar'] . ')'
+        : '';
+
+    $fecha = date('d/m', strtotime($i['fecha']));
+
+    $lineas[] = "{$fecha} {$codigo}";
+}
+
+echo implode('<br>', $lineas);
+?>
+
+</td>
+
 </tr>
+
 <?php endforeach; ?>
+
 <?php endif; ?>
+
 </table>
 
 </body>

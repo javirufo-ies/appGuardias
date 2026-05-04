@@ -37,7 +37,7 @@ foreach ($eventosSemana as $ev) {
     height: 100%;
 }
 </style>
-<div id="mensajes" class="flex flex-col h-full overflow-hidden">
+<div id="mensajes" class="flex flex-col h-full overflow-hidden border-r-2 border-black">
 
     <!-- TÍTULO FIJO -->
     <div class="shrink-0 bg-blue-700 text-white font-semibold text-center py-1 text-[clamp(12px,1.2vw,18px)]">
@@ -53,7 +53,7 @@ foreach ($eventosSemana as $ev) {
                 <?php foreach ($mensajes as $m): ?>
                     <div class="swiper-slide h-full">
 
-                        <div class="grid grid-cols-[25%_1fr] h-full border-r-2 border-[#CE1BF4]">
+                        <div class="grid grid-cols-[25%_1fr] h-full ">
 
                             <div class="flex items-stretch justify-center h-full">
                                 <?php if ($m['imagen']): ?>

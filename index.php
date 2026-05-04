@@ -38,7 +38,7 @@
         <div id="cuadrante" class="grid grid-rows-[auto_1fr] h-full overflow-hidden">
             <?php include __DIR__ . '/cuadrante.php'; ?>
         </div>
-        <div id="panel-inferior" class="grid grid-cols-2 overflow-hidden border-t-2 border-[#CE1BF4]">
+        <div id="panel-inferior" class="grid grid-cols-2 overflow-hidden border-t-2 border-black">
             <?php include __DIR__ . '/mensajes.php'; ?>
         </div>
     </div>
