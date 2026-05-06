@@ -145,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD']==='POST'){
     $aulas = $_POST['aula'] ?? [];
     $tipos = $_POST['tipo'] ?? [];
     $dia_completo = $_POST['dia_completo'] ?? [];
-
+    $tipo_dia_completo = $_POST['tipo_ausencia_dia'] ?? [];
     $seleccion = array_flip($seleccion);
 
     $tipo_default = !empty($tipos) ? reset($tipos) : null;
@@ -154,6 +154,15 @@ if ($_SERVER['REQUEST_METHOD']==='POST'){
         INSERT INTO ausencias
         (profesor_id,tramo_id,dia_semana,fecha,aula,observaciones,tipo)
         VALUES (?,?,?,?,?,?,?)
+    ");
+
+    $stmt_exists_day = $pdo->prepare("
+        SELECT id 
+        FROM ausencias
+        WHERE profesor_id = ?
+        AND tramo_id = 0
+        AND fecha = ?
+        LIMIT 1
     ");
 
     foreach($dias_num as $dia_num=>$nombre){
@@ -167,15 +176,32 @@ if ($_SERVER['REQUEST_METHOD']==='POST'){
          */
         if(!empty($dia_completo[$dia_num])){
 
-            $stmt_insert->execute([
-                $profesor_id,
-                0,
-                $nombre,
-                $fecha,
-                '',
-                '',
-                $tipo_default
-            ]);
+            $tipo_val = $tipo_dia_completo[$dia_num] ?? $tipo_default;
+
+            $stmt_exists_day->execute([$profesor_id, $fecha]);
+            $existing = $stmt_exists_day->fetchColumn();
+
+            if($existing){
+                $pdo->prepare("
+                    UPDATE ausencias
+                    SET tipo = ?, dia_completo = 1
+                    WHERE id = ?
+                ")->execute([
+                    $tipo_val,
+                    $existing
+                ]);
+
+            } else {
+                $stmt_insert->execute([
+                    $profesor_id,
+                    0,
+                    $nombre,
+                    $fecha,
+                    '',
+                    '',
+                    $tipo_val                
+                ]);
+            }
 
             continue;
         }
@@ -189,15 +215,34 @@ if ($_SERVER['REQUEST_METHOD']==='POST'){
 
             if(isset($seleccion[$dia_num.'_0'])){
 
-                $stmt_insert->execute([
-                    $profesor_id,
-                    0,
-                    $nombre,
-                    $fecha,
-                    '',
-                    '',
-                    $tipo_default
-                ]);
+                $tipo_val = $tipo_dia_completo[$dia_num] ?? $tipo_default;
+
+                $stmt_exists_day->execute([$profesor_id, $fecha]);
+                $existing = $stmt_exists_day->fetchColumn();
+
+                if($existing){
+
+                    $pdo->prepare("
+                        UPDATE ausencias
+                        SET tipo = ?, dia_completo = 0
+                        WHERE id = ?
+                    ")->execute([
+                        $tipo_val,
+                        $existing
+                    ]);
+
+                } else {
+
+                    $stmt_insert->execute([
+                        $profesor_id,
+                        0,
+                        $nombre,
+                        $fecha,
+                        '',
+                        '',
+                        $tipo_val                        
+                    ]);
+                }
             }
 
             continue;
@@ -318,11 +363,6 @@ th{
     background:#dc3545 !important;
 }
 
-input[type=checkbox]{
-    position:absolute;
-    bottom:5px;
-    right:5px;
-}
 
 input.aula,
 textarea.observacion,
@@ -445,18 +485,12 @@ function aplicarTipoDia(dia, select){
     <?= $nombre ?>
     <br>
     <label>
-        <input
-            type="checkbox"
-            onchange="marcarDiaCompleto(<?= $num ?>, this)"
-        >
+        <input type="checkbox" name="dia_completo[<?= $num ?>]" onchange="marcarDiaCompleto(<?= $num ?>, this)" <?= isset($ausencias_dia_completo[$fechas_dia[$num]]) ? 'checked' : '' ?>>
         Día completo
     </label>
-    <br><br>
+    <br>
     <label>Tipo:</label>
-    <select
-        class="select-dia"
-        onchange="aplicarTipoDia(<?= $num ?>, this)"
-    >        
+    <select class="select-dia" name="tipo_ausencia_dia[<?= $num ?>]" onchange="aplicarTipoDia(<?= $num ?>, this)" >        
         <?php foreach($tipos_ausencia as $tipo): ?>
         <option value="<?= $tipo['id'] ?>">
             <?= htmlspecialchars($tipo['descripcion']) ?>
