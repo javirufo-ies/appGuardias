@@ -57,11 +57,24 @@ async function recargarCuadrante() {
     }
 }
 
+async function recargarTitulo() {
+    try {
+        const res = await fetch('titulo.php');
+        const html = await res.text();
+        document.getElementById('titulo').innerHTML = html;
+    } catch (e) {
+        console.error('Error recargando cuadrante', e);
+    }
+}
+
 // cada 1 minuto
 setInterval(recargarCuadrante, 30000);
+//Cada hora
+setInterval(recargarTitulo, 3600000);
 
 // carga inicial opcional
 recargarCuadrante();
+recargarTitulo();
 </script>
 </body>
 
