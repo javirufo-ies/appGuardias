@@ -1,0 +1,398 @@
+:root {
+    --num-filas: 1;
+}
+
+
+
+/*------------------------
+LOGIN
+------------------------*/
+/* =========================
+   BASE + BACKGROUND
+========================= */
+.login-body {
+    margin: 0;
+    font-family: system-ui, Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    transition: 0.3s;
+}
+
+/* MODO CLARO */
+body.dark {
+    background: linear-gradient(135deg, #e5e7eb, #f9fafb);
+}
+
+/* =========================
+   CONTAINER
+========================= */
+.login-container {
+    width: 100%;
+    max-width: 380px;
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+    text-align: center;
+    transition: 0.3s;
+}
+
+body.dark .login-container {
+    background: #ffffff;
+}
+
+/* =========================
+   LOGO
+========================= */
+.login-logo img {
+    width: 110px;
+    margin-bottom: 10px;
+}
+
+/* =========================
+   TITLE
+========================= */
+.login-container h1 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #111827;
+}
+
+/* =========================
+   FORM
+========================= */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    padding: 10px;
+    transition: 0.2s;
+}
+
+.input-group:focus-within {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+.input-group .icon {
+    margin-right: 8px;
+}
+
+.input-group input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 14px;
+}
+
+/* =========================
+   BUTTON
+========================= */
+button {
+    margin-top: 10px;
+    padding: 12px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+}
+
+/* =========================
+   ERROR
+========================= */
+.error {
+    margin-top: 15px;
+    color: #dc2626;
+    font-size: 14px;
+}
+
+/* =========================
+   ANIMACIÓN ENTRADA
+========================= */
+.animate-in {
+    animation: fadeInUp 0.6s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========================
+   SHAKE ERROR
+========================= */
+.shake {
+    animation: shake 0.4s;
+}
+
+@keyframes shake {
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    50% {
+        transform: translateX(5px);
+    }
+
+    75% {
+        transform: translateX(-5px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+/* =========================
+   THEME BUTTON
+========================= */
+.theme-toggle {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+.theme-toggle button {
+    background: white;
+    color: black;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    font-size: 18px;
+}
+
+
+
+
+
+/*------------------------
+FRONTEND
+------------------------
+html,
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+
+}
+
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+.pantalla {
+    height: 100vh;
+    height: 100dvh;
+    display: grid;
+    grid-template-rows: 8fr 2fr;
+    overflow: hidden;
+    background: rgb(246, 0, 229);
+}
+
+.pantalla,
+.cuadrante,
+.panel-mensajes {
+    min-height: 0;
+    min-width: 0;
+}
+
+.pantalla {
+    background: red;
+}
+
+.cuadrante {
+    background: yellow;
+}
+
+.panel-mensajes {
+    background: blue;
+}
+
+.pantalla>* {
+    min-height: 0;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.cuadrante {
+    display: grid;
+    grid-template-rows: 1fr 9fr;
+    overflow: hidden;
+    background: white;
+    min-height: 0;
+    font-size: 1rem;
+}
+
+.panel-inferior {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.panel-inferior>div {
+    outline: 3px solid black;
+}
+
+.panel-inferior>* {
+    min-width: 0;
+    min-height: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.mensajes {
+    height: 100%;
+    background-color: lightgreen;
+    position: relative;
+    overflow: hidden;
+}
+
+
+.mensaje {
+    display: grid;
+    grid-template-columns: 30% 70%;
+    height: 100%;
+    min-height: 0;
+    position: absolute;
+    inset: 0;        
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease;    
+
+}
+
+.mensaje.activo {
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 2;
+}
+
+.imagen {    
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.imagen img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+  object-position: center;
+
+}
+
+
+.texto-mensaje {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+ 
+}
+
+.texto-mensaje p {
+    margin: 0;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+
+.actividades {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: visible;
+    padding: 0;
+    background-color: lightpink;
+    animation: animaActividades 20s linear infinite;
+
+}
+
+
+@keyframes animaActividades {
+    0% {
+        transform: translateY(0);
+    }
+
+    100% {
+        transform: translateY(-50%);
+ 
+    }
+}
+
+
+.actividad {
+    display: block;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+.texto-fecha {
+    font-weight: bold;
+}
+*/
+/* ----------------------------
+ESTILOS PARA IMPRESIÓN DEL INFORME DE FALTAS
+*/
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    /* ocultar todo */
+    #informe,
+    #informe * {
+        visibility: visible;
+    }
+
+    /* solo mostrar el informe */
+    #informe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+    }
+
+    button {
+        display: none;
+    }
+
+    /* ocultar botones */
+}
