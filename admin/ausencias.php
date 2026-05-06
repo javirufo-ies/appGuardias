@@ -23,7 +23,7 @@ $monday = clone $dt;
 $monday->modify('-'.($iso-1).' days');
 
 $fechas_dia = [];
-foreach ($dias_num as $num=>$nombre){
+foreach ($dias_num as $num=>$nombre){    
     $d = clone $monday;
     $d->modify('+'.($num-1).' days');
     $fechas_dia[$num] = $d->format('Y-m-d');
@@ -131,6 +131,9 @@ if($profesor_id){
     }
 }
 
+
+
+
 /**
  * ============================================================
  * POST
@@ -152,8 +155,8 @@ if ($_SERVER['REQUEST_METHOD']==='POST'){
 
     $stmt_insert = $pdo->prepare("
         INSERT INTO ausencias
-        (profesor_id,tramo_id,dia_semana,fecha,aula,observaciones,tipo)
-        VALUES (?,?,?,?,?,?,?)
+        (profesor_id,tramo_id,dia_semana,fecha,aula,observaciones,tipo, dia_completo)
+        VALUES (?,?,?,?,?,?,?,?)
     ");
 
     $stmt_exists_day = $pdo->prepare("
@@ -165,20 +168,33 @@ if ($_SERVER['REQUEST_METHOD']==='POST'){
         LIMIT 1
     ");
 
+    $stmt_delete_day = $pdo->prepare("
+    DELETE FROM ausencias
+    WHERE profesor_id = ?
+    AND fecha = ?
+    AND tramo_id = 0
+    ");
+
     foreach($dias_num as $dia_num=>$nombre){
 
         $fecha = $fechas_dia[$dia_num];
-
+        if(empty($dia_completo[$dia_num])){
+            $stmt_delete_day->execute([$profesor_id, $fecha]);
+        }
         /**
          * ============================================================
          * ✔ NUEVO: DÍA COMPLETO
          * ============================================================
          */
-        if(!empty($dia_completo[$dia_num]) && empty($aulas)){
+        if(!empty($dia_completo[$dia_num])){
+
             $tipo_val = $tipo_dia_completo[$dia_num] ?? $tipo_default;
+
             $stmt_exists_day->execute([$profesor_id, $fecha]);
             $existing = $stmt_exists_day->fetchColumn();
+
             if($existing){
+
                 $pdo->prepare("
                     UPDATE ausencias
                     SET tipo = ?, dia_completo = 1
@@ -187,7 +203,9 @@ if ($_SERVER['REQUEST_METHOD']==='POST'){
                     $tipo_val,
                     $existing
                 ]);
+
             } else {
+
                 $stmt_insert->execute([
                     $profesor_id,
                     0,
@@ -195,7 +213,8 @@ if ($_SERVER['REQUEST_METHOD']==='POST'){
                     $fecha,
                     '',
                     '',
-                    $tipo_val                
+                    $tipo_val,
+                    1
                 ]);
             }
 
@@ -236,7 +255,8 @@ if ($_SERVER['REQUEST_METHOD']==='POST'){
                         $fecha,
                         '',
                         '',
-                        $tipo_val                        
+                        $tipo_val ,
+                        1                       
                     ]);
                 }
             }
@@ -270,7 +290,8 @@ if ($_SERVER['REQUEST_METHOD']==='POST'){
                     $fecha,
                     $aula_val,
                     $obs_val,
-                    $tipo_val
+                    $tipo_val,
+                    0
                 ]);
             }
 
@@ -287,24 +308,6 @@ if ($_SERVER['REQUEST_METHOD']==='POST'){
                     $fecha
                 ]);
             }
-
-            if($marcado && $existe){
-
-                $pdo->prepare("
-                    UPDATE ausencias
-                    SET tipo = ?, aula = ?, observaciones = ?
-                    WHERE profesor_id=?
-                    AND tramo_id=?
-                    AND fecha=?
-                ")->execute([
-                    $tipo_val,
-                    $aula_val,
-                    $obs_val,
-                    $profesor_id,
-                    $tramo_id,
-                    $fecha
-                ]);
-            }            
         }
     }
 
