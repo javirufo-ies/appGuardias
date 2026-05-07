@@ -186,7 +186,7 @@ if ($_SERVER['REQUEST_METHOD']==='POST'){
          * ✔ NUEVO: DÍA COMPLETO
          * ============================================================
          */
-        if(!empty($dia_completo[$dia_num])){
+        if(!empty($dia_completo[$dia_num]) && empty($tramos_por_dia[$dia_num])){
 
             $tipo_val = $tipo_dia_completo[$dia_num] ?? $tipo_default;
 
