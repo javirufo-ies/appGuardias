@@ -63,7 +63,7 @@ foreach ($eventosSemana as $ev) {
                             </div>
 
                             <div class="flex h-full  p-2 overflow-hidden">
-                                    <p class="text-[clamp(12px,1vw,16px)]">
+                                    <p class="text-[clamp(10px,1.1vw,160px)]">
                                     <?= htmlspecialchars($m['texto']) ?>
                                 </p>
                             </div>
@@ -99,7 +99,7 @@ foreach ($eventosSemana as $ev) {
                         </div>
 
                         <?php foreach ($eventos as $ev): ?>
-                            <div class="text-[clamp(12px,1vw,16px)]">
+                            <div class="text-[clamp(10px,1.1vw,160px)]">
                                 <?= htmlspecialchars($ev['descripcion']) ?>
                             </div>
                         <?php endforeach; ?>
