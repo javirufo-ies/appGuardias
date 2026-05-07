@@ -137,6 +137,10 @@ foreach ($profesores_guardia as $p) {
             $clase = 'text-red-600 font-bold';
             $codigo = 'F';
         }
+        if ($codigo == '') {
+            $codigo = 'F';
+            $clase = 'text-red-600 font-bold';
+        }
 
         $lista_profesores[] = "<span class='{$clase}'>{$nombre} ({$codigo})</span>";
 
