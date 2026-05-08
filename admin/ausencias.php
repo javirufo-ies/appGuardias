@@ -308,6 +308,22 @@ if ($_SERVER['REQUEST_METHOD']==='POST'){
                     $fecha
                 ]);
             }
+
+
+            if ($marcado && $existe){
+                $pdo->prepare("
+                    UPDATE ausencias
+                    SET aula=?, observaciones=?, tipo=?
+                    WHERE profesor_id=? AND tramo_id=? AND fecha=?
+                ")->execute([
+                    $aula_val,
+                    $obs_val,
+                    $tipo_val,
+                    $profesor_id,
+                    $tramo_id,
+                    $fecha
+                ]);
+            }   
         }
     }
 
