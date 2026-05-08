@@ -18,6 +18,8 @@ $hora_actual = date('H:i:s');
 $hora_corte = '14:25';
 $turno_texto = ($hora_actual < $hora_corte) ? 'diurno' : 'vespertino';
 
+
+
 $fecha_hoy = date('Y-m-d');
 
 /**
