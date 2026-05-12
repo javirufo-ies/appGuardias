@@ -94,7 +94,7 @@ foreach ($eventosSemana as $ev) {
                 <?php foreach ($agrupados as $fecha => $eventos): ?>
                     <div class="swiper-slide h-full overflow-auto p-2">
 
-                        <div class="font-semibold text-[clamp(12px,1.1vw,18px)]">
+                        <div class="font-bold text-[clamp(12px,1.1vw,18px)]">
                             <?= $fecha ?>
                         </div>
 

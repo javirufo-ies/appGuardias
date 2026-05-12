@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/includes/db.php';
+require_once __DIR__ . '/../includes/db.php';
 
 if(!isset($_GET['id'])) {
     header("Location: mensajes.php");
