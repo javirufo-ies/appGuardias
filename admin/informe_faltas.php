@@ -85,7 +85,7 @@ foreach ($rows as $r) {
 <head>
 <meta charset="UTF-8">
 <style>
-body { font-family: Arial; margin:20px; }
+
 table { width:100%; border-collapse: collapse; margin-top:20px;}
 th,td { border:1px solid #ccc; padding:8px; vertical-align: top; }
 th { background:#333; color:white; }

@@ -89,7 +89,6 @@ $dias_mes = (int)$primer_dia->format('t');
 <meta charset="UTF-8">
 
 <style>
-body { font-family: Arial; margin:20px; }
 h2 { text-align:center; }
 
 .nav {

@@ -9,6 +9,10 @@ if (!isset($_SESSION['usuario'])) header('Location: login.php');
     <title>Panel de Administración</title>
     <link rel="stylesheet" href="../assets/css/admin.css?v=<?= time() ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+
+
+
 </head>
 <body class="admin-body">
 
@@ -28,12 +32,12 @@ if (!isset($_SESSION['usuario'])) header('Location: login.php');
             <i class="fa-solid fa-chalkboard-user"></i>
             <span class="text">Profesores</span>
         </a>
-
+<!--
         <a href="dashboard.php?seccion=tramos" data-sec="tramos">
             <i class="fa-solid fa-clock"></i>
             <span class="text">Tramos</span>
         </a>
-
+-->
 
         <a href="dashboard.php?seccion=ausencias" data-sec="ausencias">
             <i class="fa-solid fa-user-xmark"></i>
@@ -60,9 +64,20 @@ if (!isset($_SESSION['usuario'])) header('Location: login.php');
             <span class="text">Calendario de Ausencias</span>
         </a>
 
+        <a href="dashboard.php?seccion=cuadrante" data-sec="cuadrante">
+            <i class="fa-solid fa-tv"></i>
+            <span class="text">Cuadrante del día</span>
+        </a>
+
+
         <a href="dashboard.php?seccion=importarhorarios" data-sec="importarhorarios">
             <i class="fa-solid fa-file-export"></i>
             <span class="text">Importar horarios</span>
+        </a>
+
+        <a href="dashboard.php?seccion=misdatos" data-sec="misdatos">
+            <i class="fa-solid fa-user"></i>
+            <span class="text">Mis Datos</span>
         </a>
 
         <a href="logout.php" class="logout">
@@ -108,6 +123,9 @@ if (!isset($_SESSION['usuario'])) header('Location: login.php');
                 case 'importarhorarios': include 'importahorarios.php'; break;
                 case 'informefaltas': include 'informe_faltas.php'; break;
                 case 'calendarioausencias': include 'calendario_ausencias.php'; break;
+                case 'cuadrante': include '../cuadrante.php'; break;
+                case 'misdatos': 
+                        include 'misdatos.php'; break;
                 default:
                    // echo "<h2>Panel de control</h2><p>Selecciona una opción del menú.</p>";
             }

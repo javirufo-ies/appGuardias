@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/includes/db.php';
+require_once __DIR__ . '/../includes/db.php';
 
 echo "<h2>Importar horarios y guardias desde CSV Peñalara</h2>";
 
