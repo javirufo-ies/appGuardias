@@ -175,18 +175,88 @@ if ($_SERVER['REQUEST_METHOD']==='POST'){
     AND tramo_id = 0
     ");
 
-    foreach($dias_num as $dia_num=>$nombre){
+foreach($dias_num as $dia_num=>$nombre){
 
-        $fecha = $fechas_dia[$dia_num];
-        if(empty($dia_completo[$dia_num])){
-            $stmt_delete_day->execute([$profesor_id, $fecha]);
+    $fecha = $fechas_dia[$dia_num];
+
+    /**
+     * ============================================================
+     * COMPROBAR SI EL PROFESOR TIENE CLASE ESE DÍA
+     * ============================================================
+     */
+    $profesor_tiene_clase = false;
+
+    if(!empty($tramos_por_dia[$dia_num])){
+
+        foreach($tramos_por_dia[$dia_num] as $tramo_id=>$t){
+
+            if(
+                isset($horarios[$tramo_id]) ||
+                isset($guardias[$tramo_id])
+            ){
+                $profesor_tiene_clase = true;
+                break;
+            }
         }
-        /**
-         * ============================================================
-         * ✔ NUEVO: DÍA COMPLETO
-         * ============================================================
-         */
-        if(!empty($dia_completo[$dia_num]) && empty($tramos_por_dia[$dia_num])){
+    }
+
+    /**
+     * ============================================================
+     * BORRAR AUSENCIA DE DÍA COMPLETO SI SE HA DESMARCADO
+     * ============================================================
+     */
+    if(empty($dia_completo[$dia_num])){
+        $stmt_delete_day->execute([$profesor_id, $fecha]);
+    }
+
+    /**
+     * ============================================================
+     * DÍA COMPLETO SIN CLASES DEL PROFESOR
+     * ============================================================
+     */
+    if(!empty($dia_completo[$dia_num]) && !$profesor_tiene_clase){
+
+        $tipo_val = $tipo_dia_completo[$dia_num] ?? $tipo_default;
+
+        $stmt_exists_day->execute([$profesor_id, $fecha]);
+        $existing = $stmt_exists_day->fetchColumn();
+
+        if($existing){
+
+            $pdo->prepare("
+                UPDATE ausencias
+                SET tipo = ?, dia_completo = 1
+                WHERE id = ?
+            ")->execute([
+                $tipo_val,
+                $existing
+            ]);
+
+        } else {
+
+            $stmt_insert->execute([
+                $profesor_id,
+                0,
+                $nombre,
+                $fecha,
+                '',
+                '',
+                $tipo_val,
+                1
+            ]);
+        }
+
+        continue;
+    }
+
+    /**
+     * ============================================================
+     * PROFESOR SIN CLASES ESE DÍA
+     * ============================================================
+     */
+    if(!$profesor_tiene_clase){
+
+        if(isset($seleccion[$dia_num.'_0'])){
 
             $tipo_val = $tipo_dia_completo[$dia_num] ?? $tipo_default;
 
@@ -197,7 +267,7 @@ if ($_SERVER['REQUEST_METHOD']==='POST'){
 
                 $pdo->prepare("
                     UPDATE ausencias
-                    SET tipo = ?, dia_completo = 1
+                    SET tipo = ?, dia_completo = 0
                     WHERE id = ?
                 ")->execute([
                     $tipo_val,
@@ -214,118 +284,86 @@ if ($_SERVER['REQUEST_METHOD']==='POST'){
                     '',
                     '',
                     $tipo_val,
-                    1
-                ]);
-            }
-
-            continue;
-        }
-
-        /**
-         * ============================================================
-         * ✔ NUEVO: CASO SIN TRAMOS (profesor sin horario)
-         * ============================================================
-         */
-        if(empty($tramos_por_dia[$dia_num])){
-
-            if(isset($seleccion[$dia_num.'_0'])){
-
-                $tipo_val = $tipo_dia_completo[$dia_num] ?? $tipo_default;
-
-                $stmt_exists_day->execute([$profesor_id, $fecha]);
-                $existing = $stmt_exists_day->fetchColumn();
-
-                if($existing){
-
-                    $pdo->prepare("
-                        UPDATE ausencias
-                        SET tipo = ?, dia_completo = 0
-                        WHERE id = ?
-                    ")->execute([
-                        $tipo_val,
-                        $existing
-                    ]);
-
-                } else {
-
-                    $stmt_insert->execute([
-                        $profesor_id,
-                        0,
-                        $nombre,
-                        $fecha,
-                        '',
-                        '',
-                        $tipo_val ,
-                        1                       
-                    ]);
-                }
-            }
-
-            continue;
-        }
-
-        /**
-         * ============================================================
-         * ✔ CASO NORMAL (TU LÓGICA ORIGINAL)
-         * ============================================================
-         */
-        foreach($tramos_por_dia[$dia_num] as $tramo_id=>$t){
-
-            $key = "{$dia_num}_{$tramo_id}";
-
-            $marcado = isset($seleccion[$key]);
-
-            $aula_val = $aulas[$key] ?? '';
-            $obs_val = $observaciones[$key] ?? '';
-            $tipo_val = $tipos[$key] ?? $tipo_default;
-
-            $existe = isset($ausencias_existentes[$tramo_id]);
-
-            if($marcado && !$existe){
-
-                $stmt_insert->execute([
-                    $profesor_id,
-                    $tramo_id,
-                    $nombre,
-                    $fecha,
-                    $aula_val,
-                    $obs_val,
-                    $tipo_val,
                     0
                 ]);
             }
+        }
 
-            if(!$marcado && $existe){
+        continue;
+    }
 
-                $pdo->prepare("
-                    DELETE FROM ausencias
-                    WHERE profesor_id=?
-                    AND tramo_id=?
-                    AND fecha=?
-                ")->execute([
-                    $profesor_id,
-                    $tramo_id,
-                    $fecha
-                ]);
-            }
+    /**
+     * ============================================================
+     * CASO NORMAL
+     * ============================================================
+     */
+    foreach($tramos_por_dia[$dia_num] as $tramo_id=>$t){
 
+        /**
+         * SOLO TRAMOS DEL PROFESOR
+         */
+        if(
+            !isset($horarios[$tramo_id]) &&
+            !isset($guardias[$tramo_id])
+        ){
+            continue;
+        }
 
-            if ($marcado && $existe){
-                $pdo->prepare("
-                    UPDATE ausencias
-                    SET aula=?, observaciones=?, tipo=?
-                    WHERE profesor_id=? AND tramo_id=? AND fecha=?
-                ")->execute([
-                    $aula_val,
-                    $obs_val,
-                    $tipo_val,
-                    $profesor_id,
-                    $tramo_id,
-                    $fecha
-                ]);
-            }   
+        $key = "{$dia_num}_{$tramo_id}";
+
+        $marcado = isset($seleccion[$key]);
+
+        $aula_val = $aulas[$key] ?? '';
+        $obs_val = $observaciones[$key] ?? '';
+        $tipo_val = $tipos[$key] ?? $tipo_default;
+
+        $existe = isset($ausencias_existentes[$tramo_id]);
+
+        if($marcado && !$existe){
+
+            $stmt_insert->execute([
+                $profesor_id,
+                $tramo_id,
+                $nombre,
+                $fecha,
+                $aula_val,
+                $obs_val,
+                $tipo_val,
+                0
+            ]);
+        }
+
+        if(!$marcado && $existe){
+
+            $pdo->prepare("
+                DELETE FROM ausencias
+                WHERE profesor_id=?
+                AND tramo_id=?
+                AND fecha=?
+            ")->execute([
+                $profesor_id,
+                $tramo_id,
+                $fecha
+            ]);
+        }
+
+        if($marcado && $existe){
+
+            $pdo->prepare("
+                UPDATE ausencias
+                SET aula=?, observaciones=?, tipo=?
+                WHERE profesor_id=? AND tramo_id=? AND fecha=?
+            ")->execute([
+                $aula_val,
+                $obs_val,
+                $tipo_val,
+                $profesor_id,
+                $tramo_id,
+                $fecha
+            ]);
         }
     }
+}
 
     header("Location: dashboard.php?seccion=ausencias&ok=1&profesor_id=".$profesor_id);
     exit;
